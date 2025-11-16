@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/koi_dark_blue"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header con gradiente y logo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:background="@drawable/team_header_gradient"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/teamDetailLogo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/koi_light_gray"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="20dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/teamDetailGame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="League of Legends"
+                    android:textColor="@color/koi_purple"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/category_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/teamDetailName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Movistar KOI LoL"
+                    android:textColor="@color/koi_white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/teamDetailCompetition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LEC, LVP SuperLiga"
+                    android:textColor="@color/koi_white"
+                    android:textSize="14sp"
+                    android:alpha="0.9" />
+
+                <TextView
+                    android:id="@+id/teamDetailCoach"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Entrenador: Peter Dun"
+                    android:textColor="@color/koi_white"
+                    android:textSize="12sp"
+                    android:alpha="0.8"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Contenido del equipo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Descripción -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sobre el Equipo"
+                android:textColor="@color/koi_white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_info"
+                android:drawableTint="@color/koi_purple" />
+
+            <TextView
+                android:id="@+id/teamDetailDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del equipo..."
+                android:textColor="@color/koi_light_gray"
+                android:textSize="15sp"
+                android:lineSpacingExtra="6sp"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Jugadores -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Plantilla"
+                android:textColor="@color/koi_white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_players"
+                android:drawableTint="@color/koi_purple" />
+
+            <TextView
+                android:id="@+id/teamDetailPlayersCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5 jugadores"
+                android:textColor="@color/koi_purple"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/teamDetailPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cargando jugadores..."
+                android:textColor="@color/koi_light_gray"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- ProgressBar para jugadores -->
+            <ProgressBar
+                android:id="@+id/progressBarPlayers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone" />
+
+            <!-- RecyclerView para jugadores -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:visibility="visible" />
+
+            <!-- Logros (sección condicional) -->
+            <LinearLayout
+                android:id="@+id/achievementsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Palmarés"
+                    android:textColor="@color/koi_white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_trophy"
+                    android:drawableTint="@color/koi_purple" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/koi_dark_gray">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/teamDetailAchievements"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="• Logro 1\n• Logro 2"
+                            android:textColor="@color/koi_light_gray"
+                            android:textSize="14sp"
+                            android:lineSpacingExtra="4sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Espacio al final -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/koi_dark_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Imagen de la noticia -->
+        <ImageView
+            android:id="@+id/newsImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@color/koi_light_gray"
+            android:contentDescription="Imagen de la noticia"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Categoría -->
+        <TextView
+            android:id="@+id/newsCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="COMPETICIÓN"
+            android:textColor="@color/koi_purple"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/category_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Título -->
+        <TextView
+            android:id="@+id/newsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título de la noticia"
+            android:textColor="@color/koi_white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Contenido preview -->
+        <TextView
+            android:id="@+id/newsContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contenido de la noticia..."
+            android:textColor="@color/koi_light_gray"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/newsDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="15 Ene 2024"
+            android:textColor="@color/koi_light_gray"
+            android:textSize="12sp"
+            android:drawableStart="@android:drawable/ic_menu_month"
+            android:drawableTint="@color/koi_light_gray"
+            android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

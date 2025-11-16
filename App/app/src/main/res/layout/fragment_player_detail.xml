@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/koi_dark_blue"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header con foto y información básica -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:background="@drawable/player_header_gradient"
+            android:gravity="center_vertical">
+
+            <!-- Foto del jugador -->
+            <ImageView
+                android:id="@+id/playerDetailPhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@color/koi_light_gray"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="20dp" />
+
+            <!-- Información del jugador -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Rol -->
+                <TextView
+                    android:id="@+id/playerDetailRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jungla"
+                    android:textColor="@color/koi_purple"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/category_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Nickname -->
+                <TextView
+                    android:id="@+id/playerDetailNickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Koldo"
+                    android:textColor="@color/koi_white"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Nombre real -->
+                <TextView
+                    android:id="@+id/playerDetailName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre Apellido"
+                    android:textColor="@color/koi_white"
+                    android:textSize="16sp"
+                    android:alpha="0.9"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Información adicional -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Nacionalidad -->
+                    <TextView
+                        android:id="@+id/playerDetailNationality"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🇪🇸 España"
+                        android:textColor="@color/koi_white"
+                        android:textSize="14sp"
+                        android:drawablePadding="8dp"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Edad -->
+                    <TextView
+                        android:id="@+id/playerDetailAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="22 años"
+                        android:textColor="@color/koi_white"
+                        android:textSize="14sp"
+                        android:drawablePadding="8dp"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Equipo -->
+                    <TextView
+                        android:id="@+id/playerDetailTeam"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Movistar KOI LoL"
+                        android:textColor="@color/koi_white"
+                        android:textSize="14sp"
+                        android:drawablePadding="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Contenido del jugador -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Biografía -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Biografía"
+                android:textColor="@color/koi_white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_info"
+                android:drawableTint="@color/koi_purple" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/koi_dark_gray"
+                android:layout_marginBottom="32dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/playerDetailBio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Biografía del jugador..."
+                        android:textColor="@color/koi_light_gray"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="6sp"
+                        android:textIsSelectable="true" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Estadísticas (placeholder para futura implementación) -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estadísticas"
+                android:textColor="@color/koi_white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_stats"
+                android:drawableTint="@color/koi_purple" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/koi_dark_gray"
+                android:layout_marginBottom="32dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Estadísticas próximamente..."
+                        android:textColor="@color/koi_light_gray"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:padding="20dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Espacio al final -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

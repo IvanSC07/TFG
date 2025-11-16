@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/koi_dark_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Logo del equipo -->
+        <ImageView
+            android:id="@+id/teamLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/koi_light_gray"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Información del equipo -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Juego -->
+            <TextView
+                android:id="@+id/teamGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="League of Legends"
+                android:textColor="@color/koi_purple"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="@drawable/category_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Nombre del equipo -->
+            <TextView
+                android:id="@+id/teamName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Movistar KOI LoL"
+                android:textColor="@color/koi_white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Competición -->
+            <TextView
+                android:id="@+id/teamCompetition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LEC, LVP SuperLiga"
+                android:textColor="@color/koi_light_gray"
+                android:textSize="12sp" />
+
+            <!-- Entrenador -->
+            <TextView
+                android:id="@+id/teamCoach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Coach: Peter Dun"
+                android:textColor="@color/koi_light_gray"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Flecha indicadora -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_media_next"
+            android:tint="@color/koi_light_gray" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

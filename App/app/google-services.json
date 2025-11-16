@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98736729657",
+    "project_id": "movistar-koi-app",
+    "storage_bucket": "movistar-koi-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98736729657:android:6a78d77e4933bea40da7e8",
+        "android_client_info": {
+          "package_name": "com.movistar.koi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIgAccQDNB9A_p7tIAt7fKzhyxamB-qkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

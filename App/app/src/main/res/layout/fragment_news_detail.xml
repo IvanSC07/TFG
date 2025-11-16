@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/koi_dark_blue"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Imagen principal de la noticia -->
+        <ImageView
+            android:id="@+id/detailNewsImage"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:background="@color/koi_dark_gray"
+            android:contentDescription="Imagen principal de la noticia" />
+
+        <!-- Contenido de la noticia -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Categoría -->
+            <TextView
+                android:id="@+id/detailNewsCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="COMPETICIÓN"
+                android:textColor="@color/koi_purple"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/category_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/detailNewsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título de la noticia"
+                android:textColor="@color/koi_white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="6sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Fecha y autor -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:id="@+id/detailNewsDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="15 Enero 2024"
+                    android:textColor="@color/koi_light_gray"
+                    android:textSize="14sp"
+                    android:drawableStart="@android:drawable/ic_menu_month"
+                    android:drawableTint="@color/koi_light_gray"
+                    android:drawablePadding="6dp" />
+
+                <TextView
+                    android:id="@+id/detailNewsAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Movistar KOI"
+                    android:textColor="@color/koi_light_gray"
+                    android:textSize="14sp"
+                    android:drawableStart="@android:drawable/ic_menu_edit"
+                    android:drawableTint="@color/koi_light_gray"
+                    android:drawablePadding="6dp" />
+
+            </LinearLayout>
+
+            <!-- Línea separadora -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/koi_dark_gray"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Contenido completo -->
+            <TextView
+                android:id="@+id/detailNewsContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contenido completo de la noticia..."
+                android:textColor="@color/koi_white"
+                android:textSize="16sp"
+                android:lineSpacingExtra="8sp"
+                android:textIsSelectable="true" />
+
+            <!-- Espacio al final -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

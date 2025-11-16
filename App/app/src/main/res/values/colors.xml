@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores principales de Movistar KOI -->
+    <color name="koi_dark_blue">#FF0D0D2B</color>
+    <color name="koi_purple">#FF8B5CF6</color>
+    <color name="koi_light_blue">#FF3B82F6</color>
+    <color name="koi_dark_gray">#FF1E1E2D</color>
+    <color name="koi_white">#FFFFFFFF</color>
+    <color name="koi_light_gray">#FFA0A0B0</color>
+
+    <!-- Colores del sistema -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Colores de tema -->
+    <color name="primary">@color/koi_purple</color>
+    <color name="primary_dark">@color/koi_dark_blue</color>
+    <color name="accent">@color/koi_light_blue</color>
+    <color name="background">@color/koi_dark_blue</color>
+    <color name="surface">@color/koi_dark_gray</color>
+    <color name="on_primary">@color/koi_white</color>
+    <color name="on_background">@color/koi_white</color>
+    <color name="on_surface">@color/koi_white</color>
+</resources>

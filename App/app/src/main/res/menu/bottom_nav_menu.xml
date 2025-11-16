@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_news"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Noticias" />
+
+    <item
+        android:id="@+id/nav_matches"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="Partidos" />
+
+    <item
+        android:id="@+id/nav_teams"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Equipos" />
+
+    <item
+        android:id="@+id/nav_stream"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="Stream" />
+
+<!--    <item-->
+<!--        android:id="@+id/nav_calendar"-->
+<!--        android:icon="@drawable/ic_calendar"-->
+<!--        android:title="Calendario" />-->
+
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Ajustes" />
+</menu>

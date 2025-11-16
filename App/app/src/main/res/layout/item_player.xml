@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/koi_dark_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Foto del jugador -->
+        <ImageView
+            android:id="@+id/playerPhoto"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/koi_light_gray"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Información del jugador -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Nickname -->
+            <TextView
+                android:id="@+id/playerNickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Koldo"
+                android:textColor="@color/koi_white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="2dp" />
+
+            <!-- Nombre real -->
+            <TextView
+                android:id="@+id/playerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre Apellido"
+                android:textColor="@color/koi_light_gray"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Rol y nacionalidad -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/playerRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jungla"
+                    android:textColor="@color/koi_purple"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/category_background"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/playerNationality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🇪🇸 ESP"
+                    android:textColor="@color/koi_light_gray"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Edad -->
+        <TextView
+            android:id="@+id/playerAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="22"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/age_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
