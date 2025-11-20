@@ -10,6 +10,18 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/koi_dark_blue</item>
+
+        <!-- Agregar estas líneas para deshabilitar la ActionBar por defecto -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Estilo personalizado para el título de la toolbar -->
+    <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <!-- Estilos para botones -->

@@ -2,6 +2,8 @@ package com.movistar.koi
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -13,6 +15,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.movistar.koi.databinding.ActivityMainBinding
 import com.movistar.koi.workers.MatchMonitorWorker
@@ -21,6 +24,8 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var bottomNavigationView: BottomNavigationView
     companion object {
         private const val TAG = "MainActivity"
         private const val PERMISSION_REQUEST_CODE = 1001
@@ -31,18 +36,31 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Solicitar permisos de notificación primero
+        // Configurar toolbar y navigation
+        setupToolbar()
+        setupNavigation()
+
+        // Solicitar permisos de notificación
         requestNotificationPermission()
 
-        // INICIAR WORKER
+        // Iniciar worker
         startMatchMonitoringWorker()
 
-        setupNavigation()
-        setupBackButton()
-
+        // Cargar fragmento inicial
         if (savedInstanceState == null) {
             loadFragment(NewsFragment())
         }
+    }
+
+    /**
+     * Configura la toolbar con el menú de 3 puntos
+     */
+    private fun setupToolbar() {
+        toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+
+        // Quitar el título por defecto
+        supportActionBar?.setDisplayShowTitleEnabled(true)
     }
 
     /**
@@ -160,8 +178,13 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * Configura la navegación inferior
+     */
     private fun setupNavigation() {
-        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+        bottomNavigationView = binding.bottomNavigationView
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_news -> {
                     loadFragment(NewsFragment())
@@ -179,33 +202,34 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(StreamFragment())
                     true
                 }
-                R.id.nav_settings -> {
-                    loadFragment(SettingsFragment())
+                R.id.nav_calendar -> {
+                    loadFragment(CalendarFragment())
                     true
                 }
-//                R.id.nav_calendar -> {
-//                    loadFragment(CalendarFragment())
-//                    true
-//                }
                 else -> false
             }
         }
     }
 
-    private fun setupBackButton() {
-        val backButton = binding.backButton
-        val bottomNav = binding.bottomNavigationView
+    /**
+     * Crea el menú de opciones (3 puntos)
+     */
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
 
-        backButton.setOnClickListener {
-            supportFragmentManager.popBackStack()
-        }
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            val hasBackStack = supportFragmentManager.backStackEntryCount > 0
-
-            backButton.visibility = if (hasBackStack) View.VISIBLE else View.GONE
-            bottomNav.visibility = if (hasBackStack) View.GONE else View.VISIBLE
-            binding.titleText.text = if (hasBackStack) "Noticia" else "MOVISTAR KOI"
+    /**
+     * Maneja las opciones del menú
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                // Navegar a ajustes
+                loadFragment(SettingsFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

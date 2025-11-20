@@ -22,13 +22,14 @@ class CalendarAdapter(
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     private val currentDate = Calendar.getInstance()
-    private val daysInMonth = mutableListOf<Date?>()
+    private val daysInMonth = mutableListOf<Date?>() // Inicializar la lista
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
 
     companion object {
         private const val DAYS_IN_WEEK = 7
         private const val MAX_WEEKS = 6
+        private const val TOTAL_DAYS = DAYS_IN_WEEK * MAX_WEEKS // 42 días
     }
 
     inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,6 +45,7 @@ class CalendarAdapter(
                 matchCountText.visibility = View.GONE
                 itemView.isClickable = false
                 itemView.setBackgroundColor(Color.TRANSPARENT)
+                dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_text_secondary))
                 return
             }
 
@@ -57,12 +59,23 @@ class CalendarAdapter(
             if (today.get(Calendar.YEAR) == cellDate.get(Calendar.YEAR) &&
                 today.get(Calendar.MONTH) == cellDate.get(Calendar.MONTH) &&
                 today.get(Calendar.DAY_OF_MONTH) == cellDate.get(Calendar.DAY_OF_MONTH)) {
-                // Es hoy - resaltar
-                itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.koi_light_blue))
-                dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.koi_white))
+                // Es hoy - resaltar con fondo circular
+                itemView.setBackgroundResource(R.drawable.calendar_day_background)
+                itemView.isSelected = true
+                dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_text_today))
             } else {
+                // No es hoy
                 itemView.setBackgroundColor(Color.TRANSPARENT)
-                dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.koi_dark_gray))
+                itemView.isSelected = false
+                // Verificar si es del mes actual o de meses adyacentes
+                val currentCalendar = Calendar.getInstance().apply { time = currentDate.time }
+                if (cellDate.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH)) {
+                    // Mes actual - texto blanco
+                    dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_text))
+                } else {
+                    // Mes anterior o siguiente - texto gris
+                    dayText.setTextColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_text_secondary))
+                }
             }
 
             // Mostrar indicador de partidos
@@ -71,6 +84,7 @@ class CalendarAdapter(
                 if (matchesOnDay.size > 1) {
                     matchCountText.text = matchesOnDay.size.toString()
                     matchCountText.visibility = View.VISIBLE
+                    matchCountText.setTextColor(ContextCompat.getColor(itemView.context, R.color.calendar_match_count_text))
                 } else {
                     matchCountText.visibility = View.GONE
                 }
@@ -101,12 +115,18 @@ class CalendarAdapter(
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        val date = daysInMonth[position]
-        val matchesOnDay = getMatchesForDate(date)
-        holder.bind(date, matchesOnDay)
+        // Verificar que la posición es válida
+        if (position < daysInMonth.size) {
+            val date = daysInMonth[position]
+            val matchesOnDay = getMatchesForDate(date)
+            holder.bind(date, matchesOnDay)
+        } else {
+            // Si la posición no es válida, mostrar día vacío
+            holder.bind(null, emptyList())
+        }
     }
 
-    override fun getItemCount(): Int = DAYS_IN_WEEK * MAX_WEEKS
+    override fun getItemCount(): Int = TOTAL_DAYS // Siempre 42 días (6 semanas)
 
     /**
      * Actualiza el calendario con un mes específico
@@ -136,12 +156,18 @@ class CalendarAdapter(
             set(Calendar.DAY_OF_MONTH, 1)
         }
 
-        // Días del mes anterior (para completar la primera semana)
+        // Obtener el primer día de la semana del mes (1 = Domingo, 2 = Lunes, etc.)
         val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        val daysInPreviousMonth = getDaysInPreviousMonth(calendar)
 
-        // Agregar días del mes anterior
-        for (i in firstDayOfWeek - 2 downTo 0) {
+        // Ajustar para que la semana empiece en Lunes (2 = Lunes)
+        val firstDayOffset = when (firstDayOfWeek) {
+            Calendar.SUNDAY -> 6 // Domingo va al final
+            else -> firstDayOfWeek - 2 // Lunes=0, Martes=1, etc.
+        }
+
+        // Días del mes anterior (para completar la primera semana)
+        val daysInPreviousMonth = getDaysInPreviousMonth(calendar)
+        for (i in firstDayOffset downTo 0) {
             val prevCalendar = Calendar.getInstance().apply {
                 time = calendar.time
                 add(Calendar.MONTH, -1)
@@ -160,9 +186,8 @@ class CalendarAdapter(
             daysInMonth.add(currentCalendar.time)
         }
 
-        // Días del próximo mes (para completar la cuadrícula)
-        val totalCells = DAYS_IN_WEEK * MAX_WEEKS
-        val remainingCells = totalCells - daysInMonth.size
+        // Días del próximo mes (para completar la cuadrícula de 42 días)
+        val remainingCells = TOTAL_DAYS - daysInMonth.size
         for (i in 1..remainingCells) {
             val nextCalendar = Calendar.getInstance().apply {
                 time = calendar.time
@@ -170,6 +195,11 @@ class CalendarAdapter(
                 set(Calendar.DAY_OF_MONTH, i)
             }
             daysInMonth.add(nextCalendar.time)
+        }
+
+        // Asegurarse de que tenemos exactamente 42 días
+        while (daysInMonth.size < TOTAL_DAYS) {
+            daysInMonth.add(null)
         }
     }
 

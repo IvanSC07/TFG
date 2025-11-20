@@ -21,4 +21,14 @@
     <color name="on_primary">@color/koi_white</color>
     <color name="on_background">@color/koi_white</color>
     <color name="on_surface">@color/koi_white</color>
+
+    <!-- Colores específicos para el calendario -->
+    <color name="calendar_background">#FF0D0D2B</color>
+    <color name="calendar_surface">#FF1E1E2D</color>
+    <color name="calendar_day_text">#FFFFFFFF</color>
+    <color name="calendar_day_text_secondary">#FFA0A0B0</color>
+    <color name="calendar_day_text_today">#FFFFFFFF</color>
+    <color name="calendar_weekday_text">#FF8B5CF6</color>
+    <color name="calendar_match_indicator">#FF3B82F6</color>
+    <color name="calendar_match_count_text">#FFFFFFFF</color>
 </resources>

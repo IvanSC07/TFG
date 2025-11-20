@@ -71,9 +71,15 @@ class CalendarFragment : Fragment() {
             adapter = calendarAdapter
         }
 
+        // Inicializar el calendario con el mes actual
+        val calendar = Calendar.getInstance()
+        calendarAdapter.updateCalendar(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            matchesList
+        )
         updateCalendarHeader()
     }
-
     private fun setupClickListeners() {
         binding.prevMonthButton.setOnClickListener {
             currentCalendar.add(Calendar.MONTH, -1)
