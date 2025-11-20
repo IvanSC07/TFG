@@ -54,6 +54,10 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-messaging")
 
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
     //Glide para imágenes
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
@@ -66,8 +70,8 @@ dependencies {
 
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.runtime.saved.instance.state)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

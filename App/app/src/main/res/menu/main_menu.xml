@@ -2,10 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Opciones básicas -->
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_more_vert"
+        android:icon="@drawable/ic_settings"
         android:title="Ajustes"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
+
+    <!-- Opciones de administrador -->
+    <item
+        android:id="@+id/action_admin"
+        android:icon="@drawable/ic_admin"
+        android:title="Panel Admin"
+        app:showAsAction="never" />
+
+    <!-- Autenticación -->
+    <item
+        android:id="@+id/action_login"
+        android:icon="@drawable/ic_login"
+        android:title="Iniciar Sesión"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="Cerrar Sesión"
+        app:showAsAction="never" />
 
 </menu>
