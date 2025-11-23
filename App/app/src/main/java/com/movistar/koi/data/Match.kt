@@ -14,7 +14,36 @@ data class Match(
     val status: String = "scheduled", // scheduled, live, finished
     val team: String = "",
     val opponentLogo: String = "",
-    val streamUrl: String = ""
+    val streamUrl: String = "",
+    val location: String = "", // NUEVO: lugar del partido
+    val description: String = "" // NUEVO: descripción adicional
 ) {
-    constructor() : this("", Date(), "", "", "", "scheduled", "", "", "")
+    constructor() : this("", Date(), "", "", "", "scheduled", "", "", "", "", "")
+
+    /**
+     * Obtiene el estado legible del partido
+     */
+    fun getStatusText(): String {
+        return when (status) {
+            "scheduled" -> "Programado"
+            "live" -> "En Directo"
+            "finished" -> "Finalizado"
+            else -> status
+        }
+    }
+
+    /**
+     * Verifica si el partido está en vivo
+     */
+    fun isLive(): Boolean = status == "live"
+
+    /**
+     * Verifica si el partido está programado
+     */
+    fun isScheduled(): Boolean = status == "scheduled"
+
+    /**
+     * Verifica si el partido ha finalizado
+     */
+    fun isFinished(): Boolean = status == "finished"
 }

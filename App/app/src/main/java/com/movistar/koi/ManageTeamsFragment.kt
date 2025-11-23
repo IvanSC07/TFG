@@ -11,6 +11,7 @@ import com.movistar.koi.adapters.TeamsAdapter
 import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.data.Team
 import com.movistar.koi.databinding.FragmentManageTeamsBinding
+import com.movistar.koi.dialogs.TeamDialog
 
 class ManageTeamsFragment : Fragment() {
 
@@ -63,7 +64,7 @@ class ManageTeamsFragment : Fragment() {
         }
     }
 
-    private fun loadTeams() {
+    fun loadTeams() {
         binding.progressBar.visibility = View.VISIBLE
 
         FirebaseConfig.teamsCollection
@@ -99,7 +100,9 @@ class ManageTeamsFragment : Fragment() {
     }
 
     private fun showAddTeamDialog() {
-        android.widget.Toast.makeText(requireContext(), "Agregar equipo - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = TeamDialog.newInstance()
+        dialog.setTargetFragment(this, 0)
+        dialog.show(parentFragmentManager, "team_dialog")
     }
 
     private fun showTeamActionsDialog(team: Team) {
@@ -118,11 +121,17 @@ class ManageTeamsFragment : Fragment() {
     }
 
     private fun editTeam(team: Team) {
-        android.widget.Toast.makeText(requireContext(), "Editar equipo - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = TeamDialog.newInstance(team)
+        dialog.setTargetFragment(this, 0)
+        dialog.show(parentFragmentManager, "edit_team_dialog")
     }
 
     private fun manageTeamPlayers(team: Team) {
-        android.widget.Toast.makeText(requireContext(), "Gestionar jugadores - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val manageTeamPlayersFragment = ManageTeamPlayersFragment.newInstance(team)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, manageTeamPlayersFragment)
+            .addToBackStack("manage_teams")
+            .commit()
     }
 
     private fun deleteTeam(team: Team) {

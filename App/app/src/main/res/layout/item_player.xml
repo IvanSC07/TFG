@@ -55,7 +55,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
 
                 <TextView
                     android:id="@+id/playerRole"
@@ -79,6 +80,17 @@
                     android:textSize="11sp" />
 
             </LinearLayout>
+
+            <!-- Equipo (NUEVO) -->
+            <TextView
+                android:id="@+id/playerTeam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Movistar KOI LoL"
+                android:textColor="@color/koi_light_gray"
+                android:textSize="10sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
         </LinearLayout>
 

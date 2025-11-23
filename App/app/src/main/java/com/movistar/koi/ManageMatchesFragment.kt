@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.Query
@@ -12,7 +13,7 @@ import com.movistar.koi.adapters.MatchesAdapter
 import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.data.Match
 import com.movistar.koi.databinding.FragmentManageMatchesBinding
-import java.util.Date
+import com.movistar.koi.dialogs.MatchDialog
 
 class ManageMatchesFragment : Fragment() {
 
@@ -42,19 +43,17 @@ class ManageMatchesFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // Configurar toolbar
         binding.toolbar.title = "Gestionar Partidos"
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Configurar botón de agregar
         binding.fabAddMatch.setOnClickListener {
             showAddMatchDialog()
         }
 
-        // Configurar RecyclerView
-        matchesAdapter = MatchesAdapter(matchesList) { match ->
+        // Inicializar el adaptador con una lista vacía primero
+        matchesAdapter = MatchesAdapter(mutableListOf()) { match ->
             showMatchActionsDialog(match)
         }
 
@@ -65,31 +64,41 @@ class ManageMatchesFragment : Fragment() {
         }
     }
 
-    private fun loadMatches() {
+    fun loadMatches() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerViewMatches.visibility = View.GONE
+        binding.statusText.visibility = View.GONE
 
         FirebaseConfig.matchesCollection
             .orderBy("date", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 binding.progressBar.visibility = View.GONE
-                matchesList.clear()
+
+                // Crear una nueva lista en lugar de limpiar la existente
+                val newMatchesList = mutableListOf<Match>()
 
                 for (document in documents) {
                     try {
-                        val match = document.toObject(Match::class.java)
-                        matchesList.add(match)
+                        val match = document.toObject(Match::class.java).copy(id = document.id)
+                        newMatchesList.add(match)
+                        Log.d(TAG, "Partido cargado: ${match.opponent} - ID: ${match.id}")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error convirtiendo partido: ${e.message}")
                     }
                 }
 
-                matchesAdapter.updateMatches(matchesList)
+                // Actualizar la lista y notificar al adaptador
+                matchesList.clear()
+                matchesList.addAll(newMatchesList)
+                matchesAdapter.updateMatches(newMatchesList)
 
                 if (matchesList.isEmpty()) {
                     binding.statusText.text = "No hay partidos programados"
                     binding.statusText.visibility = View.VISIBLE
+                    binding.recyclerViewMatches.visibility = View.GONE
                 } else {
+                    binding.recyclerViewMatches.visibility = View.VISIBLE
                     binding.statusText.visibility = View.GONE
                 }
             }
@@ -97,13 +106,15 @@ class ManageMatchesFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.statusText.text = "Error cargando partidos: ${exception.message}"
                 binding.statusText.visibility = View.VISIBLE
+                binding.recyclerViewMatches.visibility = View.GONE
                 Log.e(TAG, "Error cargando partidos:", exception)
             }
     }
 
     private fun showAddMatchDialog() {
-        // TODO: Implementar diálogo para agregar partido
-        android.widget.Toast.makeText(requireContext(), "Agregar partido - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = MatchDialog.newInstance()
+        dialog.setTargetFragment(this, 0) // ESTABLECER TARGET FRAGMENT
+        dialog.show(parentFragmentManager, "match_dialog")
     }
 
     private fun showMatchActionsDialog(match: Match) {
@@ -121,11 +132,17 @@ class ManageMatchesFragment : Fragment() {
     }
 
     private fun editMatch(match: Match) {
-        // TODO: Implementar edición de partido
-        android.widget.Toast.makeText(requireContext(), "Editar partido - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = MatchDialog.newInstance(match)
+        dialog.setTargetFragment(this, 0) // ESTABLECER TARGET FRAGMENT
+        dialog.show(parentFragmentManager, "edit_match_dialog")
     }
 
     private fun deleteMatch(match: Match) {
+        if (match.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Partido")
             .setMessage("¿Estás seguro de que quieres eliminar el partido contra ${match.opponent}?")
@@ -137,23 +154,23 @@ class ManageMatchesFragment : Fragment() {
     }
 
     private fun performDeleteMatch(match: Match) {
-        // Buscar el documento por ID o crear uno temporal para eliminación
+        if (match.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: ID de partido inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        Log.d(TAG, "Intentando eliminar partido con ID: ${match.id}")
+
         FirebaseConfig.matchesCollection
-            .whereEqualTo("opponent", match.opponent)
-            .whereEqualTo("date", match.date)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    document.reference.delete()
-                        .addOnSuccessListener {
-                            android.widget.Toast.makeText(requireContext(), "Partido eliminado", android.widget.Toast.LENGTH_SHORT).show()
-                            loadMatches() // Recargar lista
-                        }
-                        .addOnFailureListener { e ->
-                            android.widget.Toast.makeText(requireContext(), "Error eliminando partido", android.widget.Toast.LENGTH_SHORT).show()
-                            Log.e(TAG, "Error eliminando partido: ${e.message}")
-                        }
-                }
+            .document(match.id)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Partido eliminado", Toast.LENGTH_SHORT).show()
+                loadMatches()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error eliminando partido: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "Error eliminando partido: ${e.message}")
             }
     }
 

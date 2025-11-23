@@ -11,6 +11,7 @@ import com.movistar.koi.adapters.PlayersAdapter
 import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.data.Player
 import com.movistar.koi.databinding.FragmentManagePlayersBinding
+import com.movistar.koi.dialogs.PlayerDialog
 
 class ManagePlayersFragment : Fragment() {
 
@@ -63,7 +64,7 @@ class ManagePlayersFragment : Fragment() {
         }
     }
 
-    private fun loadPlayers() {
+    fun loadPlayers() {
         binding.progressBar.visibility = View.VISIBLE
 
         FirebaseConfig.playersCollection
@@ -102,7 +103,9 @@ class ManagePlayersFragment : Fragment() {
     }
 
     private fun showAddPlayerDialog() {
-        android.widget.Toast.makeText(requireContext(), "Agregar jugador - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = PlayerDialog.newInstance()
+        dialog.setTargetFragment(this, 0)
+        dialog.show(parentFragmentManager, "player_dialog")
     }
 
     private fun showPlayerActionsDialog(player: Player) {
@@ -121,7 +124,9 @@ class ManagePlayersFragment : Fragment() {
     }
 
     private fun editPlayer(player: Player) {
-        android.widget.Toast.makeText(requireContext(), "Editar jugador - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = PlayerDialog.newInstance(player)
+        dialog.setTargetFragment(this, 0)
+        dialog.show(parentFragmentManager, "edit_player_dialog")
     }
 
     private fun showPlayerDetails(player: Player) {

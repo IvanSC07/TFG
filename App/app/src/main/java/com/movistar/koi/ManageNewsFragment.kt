@@ -24,6 +24,7 @@ class ManageNewsFragment : Fragment() {
 
     companion object {
         private const val TAG = "ManageNewsFragment"
+        private const val REQUEST_CODE_NEWS_DIALOG = 1001
     }
 
     override fun onCreateView(
@@ -43,18 +44,15 @@ class ManageNewsFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // Configurar toolbar
         binding.toolbar.title = "Gestionar Noticias"
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Configurar botón de agregar
         binding.fabAddNews.setOnClickListener {
             showAddNewsDialog()
         }
 
-        // Configurar RecyclerView
         newsAdapter = NewsAdapter(newsList) { news ->
             showNewsActionsDialog(news)
         }
@@ -66,7 +64,6 @@ class ManageNewsFragment : Fragment() {
         }
     }
 
-    // Hacer este método público para que el diálogo pueda llamarlo
     fun loadNews() {
         binding.progressBar.visibility = View.VISIBLE
         binding.recyclerViewNews.visibility = View.GONE
@@ -81,8 +78,10 @@ class ManageNewsFragment : Fragment() {
 
                 for (document in documents) {
                     try {
-                        val news = document.toObject(News::class.java)
+                        // IMPORTANTE: Asignar el ID del documento a la noticia
+                        val news = document.toObject(News::class.java).copy(id = document.id)
                         newsList.add(news)
+                        Log.d(TAG, "Noticia cargada: ${news.title} - ID: ${news.id}")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error convirtiendo noticia: ${e.message}")
                     }
@@ -107,6 +106,7 @@ class ManageNewsFragment : Fragment() {
 
     private fun showAddNewsDialog() {
         val dialog = NewsDialog.newInstance()
+        dialog.setTargetFragment(this, REQUEST_CODE_NEWS_DIALOG)
         dialog.show(parentFragmentManager, "news_dialog")
     }
 
@@ -126,10 +126,17 @@ class ManageNewsFragment : Fragment() {
 
     private fun editNews(news: News) {
         val dialog = NewsDialog.newInstance(news)
+        dialog.setTargetFragment(this, REQUEST_CODE_NEWS_DIALOG)
         dialog.show(parentFragmentManager, "edit_news_dialog")
     }
 
     private fun deleteNews(news: News) {
+        // Verificar que la noticia tiene un ID válido
+        if (news.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Noticia")
             .setMessage("¿Estás seguro de que quieres eliminar la noticia \"${news.title}\"?")
@@ -141,15 +148,23 @@ class ManageNewsFragment : Fragment() {
     }
 
     private fun performDeleteNews(news: News) {
+        // Verificación adicional del ID
+        if (news.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: ID de noticia inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        Log.d(TAG, "Intentando eliminar noticia con ID: ${news.id}")
+
         FirebaseConfig.newsCollection
-            .document(news.id)
+            .document(news.id) // Usar el ID real del documento
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Noticia eliminada", Toast.LENGTH_SHORT).show()
                 loadNews()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error eliminando noticia: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error eliminando noticia: ${e.message}", Toast.LENGTH_LONG).show()
                 Log.e(TAG, "Error eliminando noticia: ${e.message}")
             }
     }

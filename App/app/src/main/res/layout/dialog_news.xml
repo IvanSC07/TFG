@@ -96,33 +96,43 @@
             android:gravity="center"
             android:layout_marginBottom="16dp" />
 
+        <!-- Botones de imagen -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="8dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSelectImage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Seleccionar Imagen"
+                android:layout_marginEnd="4dp"
+                android:text="Galería"
                 android:backgroundTint="@color/koi_purple"
                 android:textColor="@color/white" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonRemoveImage"
+                android:id="@+id/buttonSelectImageUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="Quitar Imagen"
-                android:backgroundTint="@color/koi_dark_gray"
-                android:textColor="@color/koi_light_gray" />
+                android:layout_marginStart="4dp"
+                android:text="URL"
+                android:backgroundTint="@color/koi_light_blue"
+                android:textColor="@color/white" />
 
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonRemoveImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quitar Imagen"
+            android:backgroundTint="@color/koi_dark_gray"
+            android:textColor="@color/koi_light_gray"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 

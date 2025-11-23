@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +27,16 @@ class NewsDialog : DialogFragment() {
     private var imageUri: Uri? = null
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+
+    // Para seleccionar imagen de la galería
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            binding.imageViewNews.setImageURI(it)
+            binding.textImageStatus.text = "Imagen seleccionada - Subir al guardar"
+            // Guardamos la URI temporalmente, se subirá al guardar la noticia
+        }
+    }
 
     companion object {
         private const val TAG = "NewsDialog"
@@ -62,7 +73,10 @@ class NewsDialog : DialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .setTitle(if (existingNews == null) "Crear Noticia" else "Editar Noticia")
-            .setPositiveButton("Guardar") { _, _ -> saveNews() }
+            .setPositiveButton("Guardar") { _, _ ->
+                // Usar post para evitar problemas de contexto
+                binding.root.post { saveNews() }
+            }
             .setNegativeButton("Cancelar", null)
             .create()
     }
@@ -79,8 +93,10 @@ class NewsDialog : DialogFragment() {
 
     private fun loadExistingData() {
         arguments?.let { args ->
+            val newsId = args.getString("id") ?: ""
+
             existingNews = News(
-                id = args.getString("id") ?: "",
+                id = newsId,
                 title = args.getString("title") ?: "",
                 content = args.getString("content") ?: "",
                 imageUrl = args.getString("imageUrl") ?: "",
@@ -93,12 +109,18 @@ class NewsDialog : DialogFragment() {
             binding.editTextTitle.setText(existingNews?.title)
             binding.editTextContent.setText(existingNews?.content)
 
-            // Seleccionar categoría - CORREGIDO
+            // Seleccionar categoría
             val currentCategory = existingNews?.category ?: "general"
-            val adapter = binding.spinnerCategory.adapter as ArrayAdapter<String>
-            val position = adapter.getPosition(currentCategory)
-            if (position >= 0) {
-                binding.spinnerCategory.setSelection(position)
+            try {
+                val adapter = binding.spinnerCategory.adapter as ArrayAdapter<*>
+                for (i in 0 until adapter.count) {
+                    if (adapter.getItem(i) == currentCategory) {
+                        binding.spinnerCategory.setSelection(i)
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                binding.spinnerCategory.setSelection(0)
             }
 
             // Cargar imagen existente
@@ -113,7 +135,13 @@ class NewsDialog : DialogFragment() {
     }
 
     private fun setupListeners() {
+        // Seleccionar imagen de galería
         binding.buttonSelectImage.setOnClickListener {
+            pickImage.launch("image/*")
+        }
+
+        // Seleccionar imagen por URL
+        binding.buttonSelectImageUrl.setOnClickListener {
             showImageUrlDialog()
         }
 
@@ -148,10 +176,9 @@ class NewsDialog : DialogFragment() {
         Glide.with(requireContext())
             .load(url)
             .placeholder(R.color.koi_light_gray)
-            .error(R.color.koi_light_gray) // Usamos color en lugar de drawable por ahora
+            .error(R.color.koi_light_gray)
             .into(binding.imageViewNews)
 
-        // Asumimos éxito después de un breve delay
         binding.imageViewNews.postDelayed({
             binding.textImageStatus.text = "Imagen cargada"
             existingNews = existingNews?.copy(imageUrl = url) ?: News(imageUrl = url)
@@ -163,33 +190,36 @@ class NewsDialog : DialogFragment() {
         val content = binding.editTextContent.text.toString().trim()
         val category = binding.spinnerCategory.selectedItem.toString()
         val author = "Movistar KOI"
-        val imageUrl = existingNews?.imageUrl ?: ""
 
         if (title.isEmpty() || content.isEmpty()) {
-            Toast.makeText(requireContext(), "Completa título y contenido", Toast.LENGTH_SHORT).show()
+            showToast("Completa título y contenido")
             return
         }
 
-        val newsToSave = existingNews?.copy(
-            title = title,
-            content = content,
-            category = category,
-            author = author,
-            imageUrl = imageUrl,
-            date = if (existingNews?.id.isNullOrEmpty()) Date() else existingNews!!.date
-        ) ?: News(
-            title = title,
-            content = content,
-            category = category,
-            author = author,
-            imageUrl = imageUrl,
-            date = Date()
-        )
+        // Determinar si estamos creando o editando
+        val isEditing = !existingNews?.id.isNullOrEmpty()
 
-        if (existingNews?.id.isNullOrEmpty()) {
-            createNews(newsToSave)
+        val newsToSave = if (isEditing) {
+            existingNews!!.copy(
+                title = title,
+                content = content,
+                category = category,
+                author = author
+            )
         } else {
+            News(
+                title = title,
+                content = content,
+                category = category,
+                author = author,
+                date = Date()
+            )
+        }
+
+        if (isEditing) {
             updateNews(newsToSave)
+        } else {
+            createNews(newsToSave)
         }
     }
 
@@ -199,28 +229,48 @@ class NewsDialog : DialogFragment() {
 
         newDocRef.set(newsWithId)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Noticia creada exitosamente", Toast.LENGTH_SHORT).show()
-                dismiss()
-                // Notificar al fragment padre para que recargue
-                (parentFragment as? ManageNewsFragment)?.loadNews()
+                showToast("Noticia creada exitosamente")
+                dismissSafely()
+                notifyParentToReload()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error creando noticia: ${e.message}", Toast.LENGTH_LONG).show()
+                showToast("Error creando noticia: ${e.message}")
             }
     }
 
     private fun updateNews(news: News) {
+        // Asegurarnos de que tenemos un ID válido
+        if (news.id.isEmpty()) {
+            showToast("Error: ID de noticia inválido")
+            return
+        }
+
         db.collection("news").document(news.id)
             .set(news)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Noticia actualizada exitosamente", Toast.LENGTH_SHORT).show()
-                dismiss()
-                // Notificar al fragment padre para que recargue
-                (parentFragment as? ManageNewsFragment)?.loadNews()
+                showToast("Noticia actualizada exitosamente")
+                dismissSafely()
+                notifyParentToReload()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error actualizando noticia: ${e.message}", Toast.LENGTH_LONG).show()
+                showToast("Error actualizando noticia: ${e.message}")
             }
+    }
+
+    private fun showToast(message: String) {
+        if (isAdded && context != null) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun dismissSafely() {
+        if (isAdded) {
+            dismiss()
+        }
+    }
+
+    private fun notifyParentToReload() {
+        (targetFragment as? ManageNewsFragment)?.loadNews()
     }
 
     override fun onDestroyView() {

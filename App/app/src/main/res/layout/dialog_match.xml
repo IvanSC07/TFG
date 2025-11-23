@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/koi_dark_blue">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Oponente -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextOpponent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Oponente *"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Equipo de KOI (cargado desde BD) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Equipo de KOI *"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerTeam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/koi_purple" />
+
+        <!-- Competición (EditText en lugar de Spinner) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextCompetition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Competición *"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Estado -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estado del Partido *"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/koi_purple" />
+
+        <!-- Fecha y Hora -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha y Hora *"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:boxBackgroundColor="@color/koi_dark_blue"
+                app:hintTextColor="@color/koi_light_gray"
+                app:boxStrokeColor="@color/koi_purple">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fecha"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textColor="@color/koi_white"
+                    android:textColorHint="@color/koi_light_gray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                app:boxBackgroundColor="@color/koi_dark_blue"
+                app:hintTextColor="@color/koi_light_gray"
+                app:boxStrokeColor="@color/koi_purple">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Hora"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textColor="@color/koi_white"
+                    android:textColorHint="@color/koi_light_gray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Resultado -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Resultado (ej: 3-1)"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Logo del Oponente con opción de subir imagen -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logo del Oponente"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <ImageView
+            android:id="@+id/imageViewOpponentLogo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:background="@color/koi_light_gray"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSelectLogo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Subir Logo"
+                android:backgroundTint="@color/koi_purple"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonRemoveLogo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Quitar Logo"
+                android:backgroundTint="@color/koi_dark_gray"
+                android:textColor="@color/koi_light_gray" />
+
+        </LinearLayout>
+
+        <!-- URL del Logo (se llena automáticamente al subir imagen) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextOpponentLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL del Logo (se llena automáticamente)"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- URL del Stream -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextStreamUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL del Stream (Twitch/YouTube)"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Ubicación -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ubicación (ej: Online, Madrid...)"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Descripción -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:gravity="top"
+                android:hint="Descripción adicional"
+                android:inputType="textMultiLine"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+</ScrollView>
