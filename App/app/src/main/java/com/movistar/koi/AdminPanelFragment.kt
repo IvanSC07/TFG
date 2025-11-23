@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.movistar.koi.adapters.AdminOptionsAdapter
@@ -62,14 +63,21 @@ class AdminPanelFragment : Fragment() {
     }
 
     private fun checkAdminPermissions() {
+        Log.d(TAG, "Verificando permisos de administrador...")
+
         UserManager.isAdmin { isAdmin ->
+            Log.d(TAG, "Resultado verificación admin: $isAdmin")
+
             if (!isAdmin) {
-                Log.w(TAG, "Usuario sin permisos de admin accediendo al panel")
-                // Redirigir o mostrar mensaje
+                Log.w(TAG, "Usuario sin permisos de admin")
                 binding.statusText.text = "No tienes permisos de administrador"
                 binding.statusText.visibility = View.VISIBLE
                 binding.recyclerViewAdmin.visibility = View.GONE
+
+                // Opcional: mostrar mensaje más informativo
+                Toast.makeText(requireContext(), "Acceso restringido a administradores", Toast.LENGTH_LONG).show()
             } else {
+                Log.d(TAG, "✅ Usuario es administrador, mostrando panel")
                 binding.statusText.visibility = View.GONE
                 binding.recyclerViewAdmin.visibility = View.VISIBLE
             }

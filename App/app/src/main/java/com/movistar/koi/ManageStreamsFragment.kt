@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.movistar.koi.adapters.StreamsAdapter
 import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.data.Stream
 import com.movistar.koi.databinding.FragmentManageStreamsBinding
+import com.movistar.koi.dialogs.StreamDialog
 
 class ManageStreamsFragment : Fragment() {
 
@@ -21,6 +23,7 @@ class ManageStreamsFragment : Fragment() {
 
     companion object {
         private const val TAG = "ManageStreamsFragment"
+        private const val REQUEST_CODE_STREAM_DIALOG = 1002
     }
 
     override fun onCreateView(
@@ -51,8 +54,12 @@ class ManageStreamsFragment : Fragment() {
             showAddStreamDialog()
         }
 
-        // Configurar RecyclerView
-        streamsAdapter = StreamsAdapter(streamsList)
+        // Configurar RecyclerView con click listener Y indicar que es vista admin
+        streamsAdapter = StreamsAdapter(
+            streamsList,
+            { stream -> showStreamActionsDialog(stream) },
+            true
+        )
 
         binding.recyclerViewStreams.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -61,7 +68,7 @@ class ManageStreamsFragment : Fragment() {
         }
     }
 
-    private fun loadStreams() {
+    fun loadStreams() {
         binding.progressBar.visibility = View.VISIBLE
 
         FirebaseConfig.streamsCollection
@@ -72,8 +79,10 @@ class ManageStreamsFragment : Fragment() {
 
                 for (document in documents) {
                     try {
-                        val stream = document.toObject(Stream::class.java)
+                        // Asignar el ID del documento al stream
+                        val stream = document.toObject(Stream::class.java).copy(id = document.id)
                         streamsList.add(stream)
+                        Log.d(TAG, "Stream cargado: ${stream.title} - ID: ${stream.id}")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error convirtiendo stream: ${e.message}")
                     }
@@ -109,7 +118,66 @@ class ManageStreamsFragment : Fragment() {
     }
 
     private fun showAddStreamDialog() {
-        android.widget.Toast.makeText(requireContext(), "Agregar stream - En desarrollo", android.widget.Toast.LENGTH_SHORT).show()
+        val dialog = StreamDialog.newInstance()
+        dialog.setTargetFragment(this, REQUEST_CODE_STREAM_DIALOG)
+        dialog.show(parentFragmentManager, "stream_dialog")
+    }
+
+    private fun showStreamActionsDialog(stream: Stream) {
+        val options = arrayOf("Editar", "Eliminar", "Cancelar")
+
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Acciones para: ${stream.title}")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> editStream(stream)
+                    1 -> deleteStream(stream)
+                }
+            }
+            .show()
+    }
+
+    private fun editStream(stream: Stream) {
+        val dialog = StreamDialog.newInstance(stream)
+        dialog.setTargetFragment(this, REQUEST_CODE_STREAM_DIALOG)
+        dialog.show(parentFragmentManager, "edit_stream_dialog")
+    }
+
+    private fun deleteStream(stream: Stream) {
+        if (stream.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar Stream")
+            .setMessage("¿Estás seguro de que quieres eliminar el stream \"${stream.title}\"?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                performDeleteStream(stream)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun performDeleteStream(stream: Stream) {
+        if (stream.id.isEmpty()) {
+            Toast.makeText(requireContext(), "Error: ID de stream inválido", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        Log.d(TAG, "Intentando eliminar stream con ID: ${stream.id}")
+
+        FirebaseConfig.streamsCollection
+            .document(stream.id)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Stream eliminado", Toast.LENGTH_SHORT).show()
+                loadStreams()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error eliminando stream: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "Error eliminando stream: ${e.message}")
+            }
     }
 
     override fun onDestroyView() {

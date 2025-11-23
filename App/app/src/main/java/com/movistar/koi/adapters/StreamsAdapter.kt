@@ -19,7 +19,9 @@ import com.movistar.koi.data.Stream
  * Adaptador para mostrar la lista de streams en un RecyclerView
  */
 class StreamsAdapter(
-    private var streamsList: List<Stream> = emptyList()
+    private var streamsList: List<Stream> = emptyList(),
+    private val onItemClick: (Stream) -> Unit = {},  // Para acciones en vista admin
+    private val isAdminView: Boolean = false  // Nuevo parámetro para diferenciar vistas
 ) : RecyclerView.Adapter<StreamsAdapter.StreamViewHolder>() {
 
     companion object {
@@ -84,17 +86,28 @@ class StreamsAdapter(
             streamTitle.text = stream.title
             streamDescription.text = stream.description
 
-            // Configurar botón de ver stream
-            btnWatchStream.setOnClickListener {
-                openStream(stream.streamUrl, itemView.context)
+            // Configurar comportamiento según el tipo de vista
+            if (isAdminView) {
+                // En vista admin: click en item muestra acciones, botón abre stream
+                itemView.setOnClickListener {
+                    onItemClick(stream)  // Esto mostrará el diálogo de acciones
+                }
+
+                btnWatchStream.setOnClickListener {
+                    openStream(stream.streamUrl, itemView.context)
+                }
+            } else {
+                // En vista pública: tanto el item como el botón abren el stream
+                itemView.setOnClickListener {
+                    openStream(stream.streamUrl, itemView.context)
+                }
+
+                btnWatchStream.setOnClickListener {
+                    openStream(stream.streamUrl, itemView.context)
+                }
             }
 
-            // Click en toda la tarjeta también abre el stream
-            itemView.setOnClickListener {
-                openStream(stream.streamUrl, itemView.context)
-            }
-
-            Log.d(TAG, "Stream bindeado: ${stream.title} - Live: ${stream.isLive}")
+            Log.d(TAG, "Stream bindeado: ${stream.title} - Live: ${stream.isLive} - Admin: $isAdminView")
         }
 
         /**

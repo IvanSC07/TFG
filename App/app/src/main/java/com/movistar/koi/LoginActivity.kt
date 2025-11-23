@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.movistar.koi.data.UserManager
 import com.movistar.koi.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -81,13 +82,15 @@ class LoginActivity : AppCompatActivity() {
                 binding.btnLogin.isEnabled = true
 
                 if (task.isSuccessful) {
-                    // Login exitoso
                     val user = auth.currentUser
                     Log.d(TAG, "Login exitoso: ${user?.email}")
+
+                    // Limpiar cache antes de actualizar
+                    UserManager.clearCache()
+
                     updateUserInFirestore(user)
                     goToMainActivity()
                 } else {
-                    // Login fallido
                     Log.e(TAG, "Error en login: ${task.exception?.message}")
                     Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
@@ -104,37 +107,60 @@ class LoginActivity : AppCompatActivity() {
                 binding.btnRegister.isEnabled = true
 
                 if (task.isSuccessful) {
-                    // Registro exitoso
                     val user = auth.currentUser
                     Log.d(TAG, "Registro exitoso: ${user?.email}")
 
-                    // Hacer admin si es el email específico
+                    // EMAILS ADMIN REALES - CAMBIA ESTOS
                     val adminEmails = listOf(
-                        "tu_email@gmail.com",  // ← CAMBIA POR TU EMAIL REAL
-                        "admin@movistarkoi.com"
+                        "admin@movistarkoi.com",
+                        "sobrinocalzado2001ivan76@gmail.com",
+                        "superadmin@koi.com"
                     )
+
                     val role = if (adminEmails.contains(email.lowercase())) "admin" else "user"
 
                     updateUserInFirestore(user, role, isNewUser = true)
                     goToMainActivity()
                 } else {
-                    // Registro fallido
                     Log.e(TAG, "Error en registro: ${task.exception?.message}")
                     Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
     }
 
-    private fun updateUserInFirestore(user: FirebaseUser?, role: String = "user", isNewUser: Boolean = false) {
+    private fun updateUserInFirestore(user: FirebaseUser?, role: String? = null, isNewUser: Boolean = false) {
         if (user == null) return
+
+        // Si no se proporciona rol, obtenerlo del usuario existente o determinar
+        val finalRole = if (role != null) {
+            role
+        } else {
+            // Para usuarios existentes, mantener su rol actual
+            // Para nuevos usuarios, determinar si son admin
+            if (isNewUser) {
+                val adminEmails = listOf(
+                    "admin@movistarkoi.com",
+                    "sobrinocalzado2001ivan76@gmail.com",
+                    "superadmin@koi.com"
+                )
+                if (adminEmails.contains(user.email?.lowercase())) "admin" else "user"
+            } else {
+                null // No cambiar el rol existente
+            }
+        }
 
         val userData = hashMapOf<String, Any>(
             "email" to (user.email ?: ""),
-            "role" to role,
             "lastLogin" to com.google.firebase.Timestamp.now(),
             "displayName" to (user.displayName ?: ""),
             "photoUrl" to (user.photoUrl?.toString() ?: "")
         )
+
+        // Solo agregar rol si se está definiendo
+        finalRole?.let {
+            userData["role"] = it
+            Log.d(TAG, "Definiendo rol: $it para ${user.email}")
+        }
 
         if (isNewUser) {
             userData["createdAt"] = com.google.firebase.Timestamp.now()
@@ -144,8 +170,8 @@ class LoginActivity : AppCompatActivity() {
             .document(user.uid)
             .set(userData, com.google.firebase.firestore.SetOptions.merge())
             .addOnSuccessListener {
-                Log.d(TAG, "Usuario actualizado en Firestore: ${user.email} - Rol: $role")
-                if (role == "admin") {
+                Log.d(TAG, "Usuario actualizado en Firestore: ${user.email} - Rol: ${finalRole ?: "mantenido"}")
+                if (finalRole == "admin") {
                     Toast.makeText(this, "✅ Modo Administrador activado", Toast.LENGTH_LONG).show()
                 }
             }

@@ -1,5 +1,8 @@
 package com.movistar.koi
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -43,12 +46,34 @@ class StreamFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        streamsAdapter = StreamsAdapter(streamsList)
+        streamsAdapter = StreamsAdapter(
+            streamsList,
+            { stream ->
+                // En vista pública, el click en el item también abre el stream
+                openStream(stream.streamUrl, requireContext())
+            },
+            false  // <- Vista pública
+        )
 
         binding.recyclerViewStreams.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = streamsAdapter
             setHasFixedSize(true)
+        }
+    }
+
+    // Añade este método si no existe
+    private fun openStream(streamUrl: String, context: Context) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+            } else {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
+                context.startActivity(browserIntent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error abriendo stream: ${e.message}")
         }
     }
 

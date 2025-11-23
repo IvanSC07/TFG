@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/koi_dark_blue">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Título del stream"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray"
+                android:maxLines="2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Descripción -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Descripción del stream"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray"
+                android:maxLines="3" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- URL del Stream -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextStreamUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL del stream"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray"
+                android:inputType="textUri" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Thumbnail -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/koi_dark_blue"
+            app:hintTextColor="@color/koi_light_gray"
+            app:boxStrokeColor="@color/koi_purple">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL del thumbnail (opcional)"
+                android:textColor="@color/koi_white"
+                android:textColorHint="@color/koi_light_gray"
+                android:inputType="textUri" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Plataforma -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Plataforma"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerPlatform"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/koi_purple" />
+
+        <!-- Categoría -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Categoría"
+            android:textColor="@color/koi_white"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/koi_purple" />
+
+        <!-- Checkbox para en directo -->
+        <CheckBox
+            android:id="@+id/checkboxIsLive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="En directo"
+            android:textColor="@color/koi_white"
+            android:buttonTint="@color/koi_purple" />
+
+    </LinearLayout>
+
+</ScrollView>
