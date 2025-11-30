@@ -14,6 +14,7 @@ import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.data.News
 import com.movistar.koi.databinding.FragmentManageNewsBinding
 import com.movistar.koi.dialogs.NewsDialog
+import com.movistar.koi.services.ReactionService
 
 class ManageNewsFragment : Fragment() {
 
@@ -21,6 +22,7 @@ class ManageNewsFragment : Fragment() {
     private val binding get() = _binding!!
     private val newsList = mutableListOf<News>()
     private lateinit var newsAdapter: NewsAdapter
+    private val reactionService = ReactionService()
 
     companion object {
         private const val TAG = "ManageNewsFragment"
@@ -53,9 +55,17 @@ class ManageNewsFragment : Fragment() {
             showAddNewsDialog()
         }
 
-        newsAdapter = NewsAdapter(newsList) { news ->
-            showNewsActionsDialog(news)
-        }
+        // CORREGIDO: Ahora pasamos los 3 parámetros requeridos
+        newsAdapter = NewsAdapter(
+            newsList = newsList,
+            onItemClick = { news ->
+                showNewsActionsDialog(news)
+            },
+            onReactionClick = { reactionType, news ->
+                // En el modo administración, podemos deshabilitar las reacciones o manejarlas diferente
+                Toast.makeText(requireContext(), "Modo administración: Las reacciones están deshabilitadas", Toast.LENGTH_SHORT).show()
+            }
+        )
 
         binding.recyclerViewNews.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -78,7 +88,6 @@ class ManageNewsFragment : Fragment() {
 
                 for (document in documents) {
                     try {
-                        // IMPORTANTE: Asignar el ID del documento a la noticia
                         val news = document.toObject(News::class.java).copy(id = document.id)
                         newsList.add(news)
                         Log.d(TAG, "Noticia cargada: ${news.title} - ID: ${news.id}")
@@ -131,7 +140,6 @@ class ManageNewsFragment : Fragment() {
     }
 
     private fun deleteNews(news: News) {
-        // Verificar que la noticia tiene un ID válido
         if (news.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
             return
@@ -148,7 +156,6 @@ class ManageNewsFragment : Fragment() {
     }
 
     private fun performDeleteNews(news: News) {
-        // Verificación adicional del ID
         if (news.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: ID de noticia inválido", Toast.LENGTH_LONG).show()
             return
@@ -157,7 +164,7 @@ class ManageNewsFragment : Fragment() {
         Log.d(TAG, "Intentando eliminar noticia con ID: ${news.id}")
 
         FirebaseConfig.newsCollection
-            .document(news.id) // Usar el ID real del documento
+            .document(news.id)
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Noticia eliminada", Toast.LENGTH_SHORT).show()

@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.movistar.koi.R
+import com.movistar.koi.StreamPlayerActivity
 import com.movistar.koi.data.Stream
 
 /**
@@ -94,16 +95,16 @@ class StreamsAdapter(
                 }
 
                 btnWatchStream.setOnClickListener {
-                    openStream(stream.streamUrl, itemView.context)
+                    openStream(stream, itemView.context)
                 }
             } else {
                 // En vista pública: tanto el item como el botón abren el stream
                 itemView.setOnClickListener {
-                    openStream(stream.streamUrl, itemView.context)
+                    openStream(stream, itemView.context)
                 }
 
                 btnWatchStream.setOnClickListener {
-                    openStream(stream.streamUrl, itemView.context)
+                    openStream(stream, itemView.context)
                 }
             }
 
@@ -113,23 +114,36 @@ class StreamsAdapter(
         /**
          * Abre el stream en el navegador o app nativa
          */
-        private fun openStream(streamUrl: String, context: Context) {
+        private fun openStream(stream: Stream, context: Context) {
             try {
-                Log.d(TAG, "Abriendo stream: $streamUrl")
-
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
-
-                // Verificar si hay app que pueda manejar la URL
-                if (intent.resolveActivity(context.packageManager) != null) {
+                // Para Twitch y YouTube, usar el reproductor interno
+                if (stream.platform.lowercase() in listOf("twitch", "youtube")) {
+                    val intent = Intent(context, StreamPlayerActivity::class.java).apply {
+                        putExtra(StreamPlayerActivity.EXTRA_STREAM_URL, stream.streamUrl)
+                        putExtra(StreamPlayerActivity.EXTRA_PLATFORM, stream.platform)
+                        putExtra(StreamPlayerActivity.EXTRA_STREAM_TITLE, stream.title)
+                    }
                     context.startActivity(intent)
                 } else {
-                    // Fallback: abrir en navegador
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
-                    context.startActivity(browserIntent)
+                    // Para otras plataformas, usar intent normal
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(stream.streamUrl))
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    } else {
+                        // Fallback: abrir en navegador
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(stream.streamUrl))
+                        context.startActivity(browserIntent)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error abriendo stream: ${e.message}")
-                // Podrías mostrar un Toast aquí
+                // Fallback a intent normal en caso de error
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(stream.streamUrl))
+                    context.startActivity(intent)
+                } catch (e2: Exception) {
+                    Log.e(TAG, "Error en fallback: ${e2.message}")
+                }
             }
         }
     }

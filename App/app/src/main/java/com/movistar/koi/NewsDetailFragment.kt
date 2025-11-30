@@ -5,41 +5,37 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.movistar.koi.adapters.ReactionsAdapter
 import com.movistar.koi.data.News
 import com.movistar.koi.databinding.FragmentNewsDetailBinding
+import com.movistar.koi.services.ReactionService
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-/**
- * Fragmento para mostrar el detalle completo de una noticia
- */
 class NewsDetailFragment : Fragment() {
 
     private var _binding: FragmentNewsDetailBinding? = null
     private val binding get() = _binding!!
-
-    // Variable para almacenar la noticia actual
     private lateinit var currentNews: News
+    private val reactionService = ReactionService()
 
     companion object {
         private const val TAG = "NewsDetailFragment"
         private const val ARG_NEWS = "news"
 
-        /**
-         * Crea una nueva instancia del fragmento de detalle
-         * @param news Noticia a mostrar
-         */
         fun newInstance(news: News): NewsDetailFragment {
             val fragment = NewsDetailFragment()
             val args = Bundle()
-            // Convertir la noticia a string (usando título como identificador temporal)
             args.putString(ARG_NEWS, news.title)
             args.putString("content", news.content)
             args.putString("imageUrl", news.imageUrl)
             args.putLong("date", news.date.time)
             args.putString("category", news.category)
+            args.putString("id", news.id)
             fragment.arguments = args
             return fragment
         }
@@ -63,9 +59,11 @@ class NewsDetailFragment : Fragment() {
         val imageUrl = arguments?.getString("imageUrl") ?: ""
         val date = arguments?.getLong("date") ?: System.currentTimeMillis()
         val category = arguments?.getString("category") ?: "general"
+        val id = arguments?.getString("id") ?: ""
 
         // Reconstruir el objeto News
         currentNews = News(
+            id = id,
             title = title,
             content = content,
             imageUrl = imageUrl,
@@ -73,13 +71,9 @@ class NewsDetailFragment : Fragment() {
             category = category
         )
 
-        // Configurar la UI con los datos de la noticia
         setupUI()
     }
 
-    /**
-     * Configura la interfaz de usuario con los datos de la noticia
-     */
     private fun setupUI() {
         // Cargar imagen con Glide
         if (currentNews.imageUrl.isNotEmpty()) {
@@ -102,13 +96,53 @@ class NewsDetailFragment : Fragment() {
         val formattedDate = dateFormat.format(currentNews.date)
         binding.detailNewsDate.text = formattedDate
 
-        // Configurar autor (podríamos añadir campo author a News en el futuro)
+        // Configurar autor
         binding.detailNewsAuthor.text = "Movistar KOI"
 
         // Configurar contenido
         binding.detailNewsContent.text = currentNews.content
 
+        // Configurar reacciones en el detalle
+        setupReactions()
+
         Log.d(TAG, "📖 Mostrando detalle de noticia: ${currentNews.title}")
+    }
+
+    private fun setupReactions() {
+        val currentUserReaction = reactionService.getCurrentUserReaction(currentNews)
+        val reactionsAdapter = ReactionsAdapter(
+            onReactionClick = { reactionType ->
+                reactionService.addReaction(
+                    newsId = currentNews.id,
+                    reactionType = reactionType,
+                    onSuccess = {
+                        // Actualizar la UI
+                        setupReactions()
+                    },
+                    onError = { errorMessage ->
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
+            currentUserReaction = currentUserReaction
+        )
+
+        binding.reactionsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = reactionsAdapter
+            setHasFixedSize(true)
+        }
+
+        // Actualizar conteos
+        reactionsAdapter.updateReactionCounts(currentNews.reactions)
+
+        // Mostrar total de reacciones
+        val totalReactions = currentNews.getTotalReactions()
+        binding.totalReactionsCount.text = when {
+            totalReactions == 0 -> "0 reacciones"
+            totalReactions == 1 -> "1 reacción"
+            else -> "$totalReactions reacciones"
+        }
     }
 
     override fun onDestroyView() {

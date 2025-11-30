@@ -5,22 +5,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.movistar.koi.adapters.NewsAdapter
 import com.movistar.koi.data.News
 import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.databinding.FragmentNewsBinding
+import com.movistar.koi.services.ReactionService
 
-/**
- * Fragmento para mostrar las noticias del equipo
- */
 class NewsFragment : Fragment() {
 
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding!!
     private val newsList = mutableListOf<News>()
     private lateinit var newsAdapter: NewsAdapter
+    private val reactionService = ReactionService()
 
     companion object {
         private const val TAG = "NewsFragment"
@@ -38,33 +38,26 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configurar RecyclerView
         setupRecyclerView()
-
-        // Cargar noticias desde Firebase
         loadNews()
     }
 
-    /**
-     * Configura el RecyclerView y su adapter
-     */
     private fun setupRecyclerView() {
-        // Crear adapter con navegación al detalle
-        newsAdapter = NewsAdapter(newsList) { news ->
-            // Click listener para cada noticia - Navegar al detalle
-            Log.d(TAG, "📖 Navegando al detalle de: ${news.title}")
+        newsAdapter = NewsAdapter(
+            newsList,
+            onItemClick = { news ->
+                Log.d(TAG, "📖 Navegando al detalle de: ${news.title}")
+                val detailFragment = NewsDetailFragment.newInstance(news)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, detailFragment)
+                    .addToBackStack("news_list")
+                    .commit()
+            },
+            onReactionClick = { reactionType, news ->
+                handleReactionClick(reactionType, news)
+            }
+        )
 
-            // Crear fragmento de detalle
-            val detailFragment = NewsDetailFragment.newInstance(news)
-
-            // Navegar al detalle usando FragmentTransaction
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, detailFragment) // Reemplazar el fragmento actual
-                .addToBackStack("news_list") // Permitir volver atrás
-                .commit()
-        }
-
-        // Configurar RecyclerView
         binding.recyclerViewNews.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = newsAdapter
@@ -72,9 +65,20 @@ class NewsFragment : Fragment() {
         }
     }
 
-    /**
-     * Carga las noticias desde Firebase Firestore
-     */
+    private fun handleReactionClick(reactionType: String, news: News) {
+        reactionService.addReaction(
+            newsId = news.id,
+            reactionType = reactionType,
+            onSuccess = {
+                // Actualizar la lista para reflejar los cambios
+                loadNews()
+            },
+            onError = { errorMessage ->
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
     private fun loadNews() {
         Log.d(TAG, "Cargando noticias desde Firebase")
 
@@ -98,26 +102,20 @@ class NewsFragment : Fragment() {
 
                 for (document in documents) {
                     try {
-                        val news = document.toObject(News::class.java)
+                        val news = document.toObject(News::class.java).copy(id = document.id)
                         newsList.add(news)
-                        Log.d(TAG, "📰 Noticia: ${news.title}")
+                        Log.d(TAG, "📰 Noticia: ${news.title} - Reacciones: ${news.reactions}")
                     } catch (e: Exception) {
                         Log.e(TAG, "❌ Error convirtiendo documento: ${e.message}")
                     }
                 }
 
                 if (newsList.isNotEmpty()) {
-                    // Ordenar por fecha (más reciente primero)
                     newsList.sortByDescending { it.date }
-
-                    // Actualizar adapter
                     newsAdapter.updateNews(newsList)
-
-                    // Mostrar RecyclerView y ocultar mensaje
                     binding.recyclerViewNews.visibility = View.VISIBLE
                     binding.statusText.visibility = View.GONE
-
-                    Log.d(TAG, "✅ ${newsList.size} noticias mostradas en RecyclerView")
+                    Log.d(TAG, "✅ ${newsList.size} noticias mostradas")
                 } else {
                     binding.statusText.text = "No se pudieron cargar las noticias"
                     binding.statusText.visibility = View.VISIBLE

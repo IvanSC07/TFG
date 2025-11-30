@@ -5,34 +5,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.movistar.koi.R
 import com.movistar.koi.data.News
+import com.movistar.koi.services.ReactionService
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-/**
- * Adaptador para mostrar la lista de noticias en un RecyclerView
- */
 class NewsAdapter(
     private var newsList: List<News> = emptyList(),
-    private val onItemClick: (News) -> Unit = {}
+    private val onItemClick: (News) -> Unit = {},
+    private val onReactionClick: (String, News) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    /**
-     * ViewHolder que representa cada item de noticia
-     */
+    private val reactionService = ReactionService()
+
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val newsImage: ImageView = itemView.findViewById(R.id.newsImage)
         private val newsCategory: TextView = itemView.findViewById(R.id.newsCategory)
         private val newsTitle: TextView = itemView.findViewById(R.id.newsTitle)
         private val newsContent: TextView = itemView.findViewById(R.id.newsContent)
         private val newsDate: TextView = itemView.findViewById(R.id.newsDate)
+        private val reactionsRecyclerView: RecyclerView = itemView.findViewById(R.id.reactionsRecyclerView)
+        private val totalReactionsCount: TextView = itemView.findViewById(R.id.totalReactionsCount)
 
-        /**
-         * Vincula los datos de una noticia con las vistas
-         */
         fun bind(news: News) {
             // Cargar imagen con Glide
             if (news.imageUrl.isNotEmpty()) {
@@ -58,16 +56,43 @@ class NewsAdapter(
             val formattedDate = dateFormat.format(news.date)
             newsDate.text = formattedDate
 
-            // Configurar click listener con efecto visual
+            // Configurar reacciones
+            setupReactions(news)
+
+            // Configurar click listener para la noticia completa
             itemView.setOnClickListener {
-                // Efecto visual de click
                 itemView.alpha = 0.7f
                 itemView.postDelayed({
                     itemView.alpha = 1.0f
                 }, 100)
-
-                // Llamar al callback
                 onItemClick(news)
+            }
+        }
+
+        private fun setupReactions(news: News) {
+            val currentUserReaction = reactionService.getCurrentUserReaction(news)
+            val reactionsAdapter = ReactionsAdapter(
+                onReactionClick = { reactionType ->
+                    onReactionClick(reactionType, news)
+                },
+                currentUserReaction = currentUserReaction
+            )
+
+            reactionsRecyclerView.apply {
+                layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = reactionsAdapter
+                setHasFixedSize(true)
+            }
+
+            // Actualizar conteos
+            reactionsAdapter.updateReactionCounts(news.reactions)
+
+            // Calcular total de reacciones
+            val totalReactions = news.getTotalReactions()
+            totalReactionsCount.text = when {
+                totalReactions == 0 -> "0 reacciones"
+                totalReactions == 1 -> "1 reacción"
+                else -> "$totalReactions reacciones"
             }
         }
     }
@@ -84,9 +109,6 @@ class NewsAdapter(
 
     override fun getItemCount(): Int = newsList.size
 
-    /**
-     * Actualiza la lista de noticias y notifica al adapter
-     */
     fun updateNews(newNewsList: List<News>) {
         newsList = newNewsList
         notifyDataSetChanged()

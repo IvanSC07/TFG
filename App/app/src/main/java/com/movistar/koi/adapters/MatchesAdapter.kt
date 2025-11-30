@@ -32,6 +32,7 @@ class MatchesAdapter(
 
     inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val competition: TextView = itemView.findViewById(R.id.matchCompetition)
+        private val koiLogo: ImageView = itemView.findViewById(R.id.koiLogo)
         private val opponentLogo: ImageView = itemView.findViewById(R.id.opponentLogo)
         private val opponentName: TextView = itemView.findViewById(R.id.opponentName)
         private val matchStatus: TextView = itemView.findViewById(R.id.matchStatus)
@@ -45,6 +46,8 @@ class MatchesAdapter(
         fun bind(match: Match) {
             // Configurar competición
             competition.text = match.competition
+
+            koiLogo.setImageResource(R.drawable.logosinfondo)
 
             // Cargar logo del oponente
             if (match.opponentLogo.isNotEmpty()) {

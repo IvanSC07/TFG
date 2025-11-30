@@ -28,6 +28,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            // Para debug, no necesitamos minify
+            isMinifyEnabled = false
+        }
     }
     buildFeatures {
         viewBinding = true
@@ -72,6 +76,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.runtime.saved.instance.state)
+
+    implementation("androidx.webkit:webkit:1.8.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

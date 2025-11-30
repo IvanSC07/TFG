@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
@@ -130,6 +131,7 @@ class NewsDialog : DialogFragment() {
                     .placeholder(R.color.koi_light_gray)
                     .into(binding.imageViewNews)
                 binding.textImageStatus.text = "Imagen cargada"
+                imageUri = null
             }
         }
     }
@@ -182,6 +184,7 @@ class NewsDialog : DialogFragment() {
         binding.imageViewNews.postDelayed({
             binding.textImageStatus.text = "Imagen cargada"
             existingNews = existingNews?.copy(imageUrl = url) ?: News(imageUrl = url)
+            imageUri = null
         }, 1000)
     }
 
@@ -196,13 +199,61 @@ class NewsDialog : DialogFragment() {
             return
         }
 
-        // Determinar si estamos creando o editando
+        // Si hay una imagen seleccionada desde galería, subirla primero
+        if (imageUri != null) {
+            uploadImageAndSaveNews(title, content, category, author)
+        } else {
+            // Si no hay imagen nueva, guardar directamente
+            saveNewsToFirestore(title, content, category, author, existingNews?.imageUrl ?: "")
+        }
+    }
+
+    private fun uploadImageAndSaveNews(title: String, content: String, category: String, author: String) {
+        if (!isAdded || _binding == null) {
+            showToast("Error: Diálogo no disponible")
+            return
+        }
+
+        binding.textImageStatus.text = "Subiendo imagen..."
+
+        val fileName = "news_${System.currentTimeMillis()}.jpg"
+        val storageRef = storage.reference.child("news_images/$fileName")
+
+        storageRef.putFile(imageUri!!)
+            .addOnSuccessListener { taskSnapshot ->
+                // Obtener la URL de descarga
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    if (isAdded && _binding != null) {
+                        val imageUrl = uri.toString()
+                        binding.textImageStatus.text = "Imagen subida"
+                        saveNewsToFirestore(title, content, category, author, imageUrl)
+                    }
+                }.addOnFailureListener { e ->
+                    if (isAdded && _binding != null) {
+                        binding.textImageStatus.text = "Error obteniendo URL"
+                        showToast("Error obteniendo URL de imagen: ${e.message}")
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                if (isAdded && _binding != null) {
+                    binding.textImageStatus.text = "Error subiendo imagen"
+                    showToast("Error subiendo imagen: ${e.message}")
+
+                    // Guardar noticia sin imagen como fallback
+                    saveNewsToFirestore(title, content, category, author, "")
+                }
+            }
+    }
+
+    private fun saveNewsToFirestore(title: String, content: String, category: String, author: String, imageUrl: String) {
         val isEditing = !existingNews?.id.isNullOrEmpty()
 
         val newsToSave = if (isEditing) {
             existingNews!!.copy(
                 title = title,
                 content = content,
+                imageUrl = imageUrl,
                 category = category,
                 author = author
             )
@@ -210,6 +261,7 @@ class NewsDialog : DialogFragment() {
             News(
                 title = title,
                 content = content,
+                imageUrl = imageUrl,
                 category = category,
                 author = author,
                 date = Date()
@@ -258,8 +310,13 @@ class NewsDialog : DialogFragment() {
     }
 
     private fun showToast(message: String) {
-        if (isAdded && context != null) {
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        try {
+            if (isAdded && context != null) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            // Log silencioso
+            Log.e("NewsDialog", "Error showing toast: ${e.message}")
         }
     }
 
