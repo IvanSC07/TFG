@@ -73,7 +73,6 @@
             android:text="15 Ene 2024"
             android:textColor="@color/koi_light_gray"
             android:textSize="12sp"
-            android:drawableStart="@android:drawable/ic_menu_month"
             android:drawableTint="@color/koi_light_gray"
             android:drawablePadding="4dp" />
 
