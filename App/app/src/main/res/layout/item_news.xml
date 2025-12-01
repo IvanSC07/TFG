@@ -74,33 +74,16 @@
             android:textColor="@color/koi_light_gray"
             android:textSize="12sp"
             android:drawableTint="@color/koi_light_gray"
-            android:drawablePadding="4dp" />
+            android:drawablePadding="4dp"
+            android:layout_marginBottom="8dp" />
 
         <!-- Sección de reacciones -->
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reactionsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:gravity="center_vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reactionsRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/totalReactionsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 reacciones"
-                android:textColor="@color/koi_light_gray"
-                android:textSize="12sp" />
-
-        </LinearLayout>
+            android:paddingTop="8dp" />
 
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
-

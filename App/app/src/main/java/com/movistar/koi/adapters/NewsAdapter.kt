@@ -29,7 +29,6 @@ class NewsAdapter(
         private val newsContent: TextView = itemView.findViewById(R.id.newsContent)
         private val newsDate: TextView = itemView.findViewById(R.id.newsDate)
         private val reactionsRecyclerView: RecyclerView = itemView.findViewById(R.id.reactionsRecyclerView)
-        private val totalReactionsCount: TextView = itemView.findViewById(R.id.totalReactionsCount)
 
         fun bind(news: News) {
             // Cargar imagen con Glide
@@ -86,14 +85,6 @@ class NewsAdapter(
 
             // Actualizar conteos
             reactionsAdapter.updateReactionCounts(news.reactions)
-
-            // Calcular total de reacciones
-            val totalReactions = news.getTotalReactions()
-            totalReactionsCount.text = when {
-                totalReactions == 0 -> "0 reacciones"
-                totalReactions == 1 -> "1 reacción"
-                else -> "$totalReactions reacciones"
-            }
         }
     }
 
