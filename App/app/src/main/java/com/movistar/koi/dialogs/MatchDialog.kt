@@ -60,8 +60,6 @@ class MatchDialog : DialogFragment() {
                 args.putString("team", it.team)
                 args.putString("opponentLogo", it.opponentLogo)
                 args.putString("streamUrl", it.streamUrl)
-                args.putString("location", it.location)
-                args.putString("description", it.description)
                 dialog.arguments = args
             }
             return dialog
@@ -156,9 +154,7 @@ class MatchDialog : DialogFragment() {
                 status = args.getString("status") ?: "scheduled",
                 team = args.getString("team") ?: "",
                 opponentLogo = args.getString("opponentLogo") ?: "",
-                streamUrl = args.getString("streamUrl") ?: "",
-                location = args.getString("location") ?: "",
-                description = args.getString("description") ?: ""
+                streamUrl = args.getString("streamUrl") ?: ""
             )
 
             // Llenar los campos
@@ -167,8 +163,6 @@ class MatchDialog : DialogFragment() {
             binding.editTextResult.setText(existingMatch?.result)
             binding.editTextOpponentLogo.setText(existingMatch?.opponentLogo)
             binding.editTextStreamUrl.setText(existingMatch?.streamUrl)
-            binding.editTextLocation.setText(existingMatch?.location)
-            binding.editTextDescription.setText(existingMatch?.description)
 
             // Configurar fecha y hora - NUEVO
             val calendar = Calendar.getInstance().apply {
@@ -247,7 +241,7 @@ class MatchDialog : DialogFragment() {
             },
             selectedCalendar.get(Calendar.HOUR_OF_DAY),
             selectedCalendar.get(Calendar.MINUTE),
-            true // 24 horas
+            true
         )
         timePickerDialog.show()
     }
@@ -295,8 +289,6 @@ class MatchDialog : DialogFragment() {
         val result = binding.editTextResult.text.toString().trim()
         val opponentLogo = binding.editTextOpponentLogo.text.toString().trim()
         val streamUrl = binding.editTextStreamUrl.text.toString().trim()
-        val location = binding.editTextLocation.text.toString().trim()
-        val description = binding.editTextDescription.text.toString().trim()
 
         val status = binding.spinnerStatus.selectedItem.toString()
         val team = binding.spinnerTeam.selectedItem.toString()
@@ -309,7 +301,6 @@ class MatchDialog : DialogFragment() {
             return
         }
 
-        // El resto del código de saveMatch permanece igual...
         val isEditing = !existingMatch?.id.isNullOrEmpty()
 
         val matchToSave = if (isEditing) {
@@ -321,9 +312,6 @@ class MatchDialog : DialogFragment() {
                 team = team,
                 opponentLogo = opponentLogo,
                 streamUrl = streamUrl,
-                location = location,
-                description = description,
-                date = date // Usar la fecha del calendar
             )
         } else {
             Match(
@@ -334,9 +322,6 @@ class MatchDialog : DialogFragment() {
                 team = team,
                 opponentLogo = opponentLogo,
                 streamUrl = streamUrl,
-                location = location,
-                description = description,
-                date = date // Usar la fecha del calendar
             )
         }
 

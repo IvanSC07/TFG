@@ -14,11 +14,9 @@ data class Match(
     val status: String = "scheduled", // scheduled, live, finished
     val team: String = "",
     val opponentLogo: String = "",
-    val streamUrl: String = "",
-    val location: String = "", // NUEVO: lugar del partido
-    val description: String = "" // NUEVO: descripción adicional
+    val streamUrl: String = ""
 ) {
-    constructor() : this("", Date(), "", "", "", "scheduled", "", "", "", "", "")
+    constructor() : this("", Date(), "", "", "", "scheduled", "", "", "")
 
     /**
      * Obtiene el estado legible del partido

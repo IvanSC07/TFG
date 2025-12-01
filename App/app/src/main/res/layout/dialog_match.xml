@@ -244,45 +244,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Ubicación -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/koi_dark_blue"
-            app:hintTextColor="@color/koi_light_gray"
-            app:boxStrokeColor="@color/koi_purple">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ubicación (ej: Online, Madrid...)"
-                android:textColor="@color/koi_white"
-                android:textColorHint="@color/koi_light_gray" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Descripción -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxBackgroundColor="@color/koi_dark_blue"
-            app:hintTextColor="@color/koi_light_gray"
-            app:boxStrokeColor="@color/koi_purple">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextDescription"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:gravity="top"
-                android:hint="Descripción adicional"
-                android:inputType="textMultiLine"
-                android:textColor="@color/koi_white"
-                android:textColorHint="@color/koi_light_gray" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
     </LinearLayout>
 
 </ScrollView>
