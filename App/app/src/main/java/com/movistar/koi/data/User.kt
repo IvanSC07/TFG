@@ -10,8 +10,6 @@ object UserManager {
     // Roles
     const val ROLE_USER = "user"
     const val ROLE_ADMIN = "admin"
-
-    // Cache del rol del usuario
     private var currentUserRole: String? = null
     private var lastUserId: String? = null
 
@@ -48,7 +46,7 @@ object UserManager {
                 if (document.exists()) {
                     val role = document.getString("role") ?: ROLE_USER
                     currentUserRole = role
-                    Log.d(TAG, "✅ Rol obtenido de Firestore: $role para ${user.email}")
+                    Log.d(TAG, "Rol obtenido de Firestore: $role para ${user.email}")
                     callback(role)
                 } else {
                     // Si no existe el documento, crear uno por defecto
@@ -57,7 +55,7 @@ object UserManager {
                 }
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "❌ Error obteniendo rol: ${e.message}")
+                Log.e(TAG, "Error obteniendo rol: ${e.message}")
                 callback(ROLE_USER) // Por defecto en caso de error
             }
     }

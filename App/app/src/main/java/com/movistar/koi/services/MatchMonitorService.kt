@@ -62,7 +62,7 @@ class MatchMonitorService : Service() {
      * Inicia el monitoreo de partidos desde Firestore
      */
     private fun startMonitoringMatches() {
-        Log.d(TAG, "🎯 Iniciando monitoreo de partidos...")
+        Log.d(TAG, "Iniciando monitoreo de partidos...")
 
         matchesListener = FirebaseConfig.matchesCollection
             .addSnapshotListener { snapshot, error ->
@@ -72,7 +72,7 @@ class MatchMonitorService : Service() {
                 }
 
                 snapshot?.let { documents ->
-                    Log.d(TAG, "📊 Partidos actualizados: ${documents.size()}")
+                    Log.d(TAG, "Partidos actualizados: ${documents.size()}")
 
                     for (document in documents) {
                         try {
@@ -121,7 +121,7 @@ class MatchMonitorService : Service() {
             return
         }
 
-        Log.d(TAG, "⏰ Programando notificaciones para: ${match.opponent}")
+        Log.d(TAG, "Programando notificaciones para: ${match.opponent}")
 
         NOTIFICATION_TIMES.forEach { minutesBefore ->
             val notificationTime = Date(matchTime.time - TimeUnit.MINUTES.toMillis(minutesBefore.toLong()))
@@ -166,14 +166,14 @@ class MatchMonitorService : Service() {
             )
         }
 
-        Log.d(TAG, "🔔 Notificación programada: ${match.opponent} en $minutesBefore min")
+        Log.d(TAG, "Notificación programada: ${match.opponent} en $minutesBefore min")
     }
 
     /**
      * Envía notificación de partido en directo
      */
     private fun sendLiveMatchNotification(match: Match) {
-        Log.d(TAG, "🔴 Notificando partido en directo: ${match.opponent}")
+        Log.d(TAG, "Notificando partido en directo: ${match.opponent}")
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -191,7 +191,7 @@ class MatchMonitorService : Service() {
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("🔴 ¡PARTIDO EN DIRECTO!")
+            .setContentTitle("¡PARTIDO EN DIRECTO!")
             .setContentText("KOI vs ${match.opponent} - ${match.competition}")
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText("El partido entre Movistar KOI y ${match.opponent} ha comenzado en la ${match.competition}. ¡No te lo pierdas!"))
@@ -261,6 +261,6 @@ class MatchMonitorService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         matchesListener?.remove()
-        Log.d(TAG, "🛑 Servicio de monitoreo detenido")
+        Log.d(TAG, "Servicio de monitoreo detenido")
     }
 }

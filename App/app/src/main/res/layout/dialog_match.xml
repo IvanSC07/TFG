@@ -31,7 +31,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Equipo de KOI (cargado desde BD) -->
+        <!-- Equipo de KOI -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -175,7 +175,6 @@
             android:layout_height="120dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:background="@color/koi_light_gray"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout

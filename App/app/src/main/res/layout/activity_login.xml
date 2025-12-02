@@ -136,15 +136,4 @@
         android:layout_marginTop="16dp"
         android:visibility="gone" />
 
-    <!-- Información -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Modo Invitado: Solo lectura\nModo Registrado: Acceso completo\nAdmin: Gestionar contenido"
-        android:textColor="@color/koi_light_gray"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:layout_marginTop="40dp"
-        android:lineSpacingExtra="4dp" />
-
 </LinearLayout>

@@ -45,29 +45,6 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         setupUserInterface()
     }
-
-//    private fun setupUserInterface() {
-//        setupToolbar()
-//        setupNavigation()
-//        setupMenuBasedOnAuth()
-//        requestNotificationPermission()
-//        startMatchMonitoringWorker()
-//
-//        // Cargar fragmento inicial solo si es la primera vez
-//        if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
-//            loadFragment(NewsFragment())
-//        }
-//
-//        // Mostrar estado de autenticación
-//        val user = auth.currentUser
-//        if (user != null) {
-//            Log.d(TAG, "✅ Usuario autenticado: ${user.email}")
-//            Toast.makeText(this, "Bienvenido ${user.email}", Toast.LENGTH_SHORT).show()
-//        } else {
-//            Log.d(TAG, "🔓 Modo invitado activado")
-//            Toast.makeText(this, "Modo invitado - Acceso de solo lectura", Toast.LENGTH_LONG).show()
-//        }
-//    }
         private fun setupUserInterface() {
             setupToolbar()
             setupNavigation()
@@ -218,8 +195,9 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Logout exitoso")
                 // Limpiar cache de usuario
                 UserManager.clearCache()
-                // Recargar la actividad para actualizar el menú
-                val intent = Intent(this, MainActivity::class.java)
+                // Redirigir a LoginActivity
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
             }
@@ -256,10 +234,10 @@ class MainActivity : AppCompatActivity() {
                 workRequest
             )
 
-            Log.d(TAG, "🎯 Worker de monitoreo programado cada 15 minutos")
+            Log.d(TAG, "Worker de monitoreo programado cada 15 minutos")
 
         } catch (e: Exception) {
-            Log.e(TAG, "❌ Error programando worker: ${e.message}", e)
+            Log.e(TAG, "Error programando worker: ${e.message}", e)
         }
     }
 
@@ -270,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                     this,
                     android.Manifest.permission.POST_NOTIFICATIONS
                 ) == android.content.pm.PackageManager.PERMISSION_GRANTED -> {
-                    Log.d(TAG, "✅ Permisos de notificación concedidos")
+                    Log.d(TAG, "Permisos de notificación concedidos")
                 }
                 shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS) -> {
                     showPermissionExplanation()
@@ -281,11 +259,11 @@ class MainActivity : AppCompatActivity() {
                         arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
                         PERMISSION_REQUEST_CODE
                     )
-                    Log.d(TAG, "📢 Solicitando permisos de notificación...")
+                    Log.d(TAG, "Solicitando permisos de notificación...")
                 }
             }
         } else {
-            Log.d(TAG, "✅ Android <13, no se necesitan permisos explícitos")
+            Log.d(TAG, "Android <13, no se necesitan permisos explícitos")
         }
     }
 
@@ -316,10 +294,10 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "✅ Permisos de notificación concedidos por el usuario")
+                    Log.d(TAG, "Permisos de notificación concedidos por el usuario")
                     Toast.makeText(this, "Notificaciones activadas", Toast.LENGTH_SHORT).show()
                 } else {
-                    Log.w(TAG, "❌ Permisos de notificación denegados por el usuario")
+                    Log.w(TAG, "Permisos de notificación denegados por el usuario")
                     Toast.makeText(this, "Las notificaciones estarán desactivadas", Toast.LENGTH_LONG).show()
                 }
             }

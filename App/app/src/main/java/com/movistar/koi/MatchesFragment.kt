@@ -80,7 +80,7 @@ class MatchesFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 matchesList.clear()
 
-                Log.d(TAG, "✅ Partidos encontrados: ${documents.size()}")
+                Log.d(TAG, "Partidos encontrados: ${documents.size()}")
 
                 if (documents.isEmpty) {
                     binding.statusText.text = "No hay partidos programados"
@@ -92,9 +92,9 @@ class MatchesFragment : Fragment() {
                     try {
                         val match = document.toObject(Match::class.java)
                         matchesList.add(match)
-                        Log.d(TAG, "⚽ Partido: ${match.opponent} vs KOI - ${match.competition}")
+                        Log.d(TAG, "Partido: ${match.opponent} vs KOI - ${match.competition}")
                     } catch (e: Exception) {
-                        Log.e(TAG, "❌ Error convirtiendo partido: ${e.message}")
+                        Log.e(TAG, "Error convirtiendo partido: ${e.message}")
                     }
                 }
 
@@ -117,7 +117,7 @@ class MatchesFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.statusText.text = "Error cargando partidos: ${exception.message}"
                 binding.statusText.visibility = View.VISIBLE
-                Log.e(TAG, "❌ Error cargando partidos:", exception)
+                Log.e(TAG, "Error cargando partidos:", exception)
             }
     }
 
@@ -155,7 +155,7 @@ class MatchesFragment : Fragment() {
         }
 
         if (upcomingMatches.isNotEmpty()) {
-            Log.d(TAG, "📢 Partidos próximos en 1 hora: ${upcomingMatches.size}")
+            Log.d(TAG, "Partidos próximos en 1 hora: ${upcomingMatches.size}")
 
             // Podríamos mostrar una notificación local aquí
             upcomingMatches.forEach { match ->
@@ -196,7 +196,7 @@ class MatchesFragment : Fragment() {
 
         val notification = NotificationCompat.Builder(requireContext(), "upcoming_matches")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("⏰ Partido próximo!")
+            .setContentTitle("Partido próximo!")
             .setContentText("KOI vs ${match.opponent} a las $matchTime")
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -213,7 +213,7 @@ class MatchesFragment : Fragment() {
      * Método para probar notificaciones locales
      */
     private fun testLocalNotification() {
-        Log.d(TAG, "🔔 Probando notificación local...")
+        Log.d(TAG, "Probando notificación local...")
 
         val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -242,7 +242,7 @@ class MatchesFragment : Fragment() {
         // Crear notificación de prueba
         val notification = NotificationCompat.Builder(requireContext(), "test_channel")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("🎉 ¡Notificación de Prueba!")
+            .setContentTitle("¡Notificación de Prueba!")
             .setContentText("Las notificaciones de Movistar KOI están funcionando correctamente")
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -254,7 +254,7 @@ class MatchesFragment : Fragment() {
         // Mostrar notificación
         notificationManager.notify(9999, notification)
 
-        Log.d(TAG, "✅ Notificación de prueba enviada")
+        Log.d(TAG, "Notificación de prueba enviada")
 
         // Mostrar Toast para confirmación visual
         Toast.makeText(requireContext(), "Notificación de prueba enviada", Toast.LENGTH_SHORT).show()

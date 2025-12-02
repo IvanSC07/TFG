@@ -30,7 +30,7 @@ class MatchMonitorWorker(
     }
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "🔄 Worker de monitoreo ejecutándose...")
+        Log.d(TAG, "Worker de monitoreo ejecutándose...")
 
         return try {
             checkUpcomingMatches()
@@ -53,7 +53,7 @@ class MatchMonitorWorker(
             .get()
             .await()
 
-        Log.d(TAG, "📊 Partidos programados encontrados: ${documents.size()}")
+        Log.d(TAG, "Partidos programados encontrados: ${documents.size()}")
 
         for (document in documents) {
             try {
@@ -75,7 +75,7 @@ class MatchMonitorWorker(
         // Si el partido es en menos de 1 hora
         if (timeDiff > 0 && timeDiff <= TimeUnit.HOURS.toMillis(1)) {
             val minutesLeft = TimeUnit.MILLISECONDS.toMinutes(timeDiff)
-            Log.d(TAG, "⏰ Partido próximo: ${match.opponent} en $minutesLeft min")
+            Log.d(TAG, "Partido próximo: ${match.opponent} en $minutesLeft min")
 
             if (minutesLeft <= 60) {
                 sendUpcomingMatchNotification(match, minutesLeft.toInt())
@@ -84,7 +84,7 @@ class MatchMonitorWorker(
 
         // Si el partido debería haber empezado pero sigue como scheduled
         if (matchTime.before(now) && match.status == "scheduled") {
-            Log.d(TAG, "🔴 Partido debería haber empezado: ${match.opponent}")
+            Log.d(TAG, "Partido debería haber empezado: ${match.opponent}")
             sendMatchShouldStartNotification(match)
         }
     }
@@ -103,7 +103,7 @@ class MatchMonitorWorker(
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("⏰ Partido Próximo")
+            .setContentTitle("Partido Próximo")
             .setContentText("KOI vs ${match.opponent} $timeText")
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText("El partido entre Movistar KOI y ${match.opponent} comienza $timeText. Competición: ${match.competition}"))
@@ -113,7 +113,7 @@ class MatchMonitorWorker(
             .build()
 
         notificationManager.notify(generateNotificationId(match.id), notification)
-        Log.d(TAG, "✅ Notificación enviada: ${match.opponent}")
+        Log.d(TAG, "Notificación enviada: ${match.opponent}")
     }
 
     /**
@@ -123,8 +123,8 @@ class MatchMonitorWorker(
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("🔴 Partido por Empezar")
+            .setSmallIcon(R.drawable.logosinfondo)
+            .setContentTitle("Partido por Empezar")
             .setContentText("KOI vs ${match.opponent} debería haber empezado")
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText("El partido entre Movistar KOI y ${match.opponent} estaba programado para ahora. Competición: ${match.competition}"))

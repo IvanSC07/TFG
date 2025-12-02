@@ -55,14 +55,12 @@ class ManageNewsFragment : Fragment() {
             showAddNewsDialog()
         }
 
-        // CORREGIDO: Ahora pasamos los 3 parámetros requeridos
         newsAdapter = NewsAdapter(
             newsList = newsList,
             onItemClick = { news ->
                 showNewsActionsDialog(news)
             },
             onReactionClick = { reactionType, news ->
-                // En el modo administración, podemos deshabilitar las reacciones o manejarlas diferente
                 Toast.makeText(requireContext(), "Modo administración: Las reacciones están deshabilitadas", Toast.LENGTH_SHORT).show()
             }
         )

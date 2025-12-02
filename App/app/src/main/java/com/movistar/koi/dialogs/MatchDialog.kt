@@ -293,7 +293,7 @@ class MatchDialog : DialogFragment() {
         val status = binding.spinnerStatus.selectedItem.toString()
         val team = binding.spinnerTeam.selectedItem.toString()
 
-        // Obtener fecha y hora desde selectedCalendar - NUEVO
+        // Obtener fecha y hora desde selectedCalendar
         val date = selectedCalendar.time
 
         if (opponent.isEmpty() || competition.isEmpty()) {
@@ -312,16 +312,18 @@ class MatchDialog : DialogFragment() {
                 team = team,
                 opponentLogo = opponentLogo,
                 streamUrl = streamUrl,
+                date = date  // Asignar la fecha corregida
             )
         } else {
             Match(
+                date = date,  // Asignar la fecha corregida
                 opponent = opponent,
                 competition = competition,
                 result = result,
                 status = status,
                 team = team,
                 opponentLogo = opponentLogo,
-                streamUrl = streamUrl,
+                streamUrl = streamUrl
             )
         }
 

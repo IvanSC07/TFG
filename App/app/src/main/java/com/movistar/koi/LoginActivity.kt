@@ -110,7 +110,6 @@ class LoginActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     Log.d(TAG, "Registro exitoso: ${user?.email}")
 
-                    // EMAILS ADMIN REALES - CAMBIA ESTOS
                     val adminEmails = listOf(
                         "admin@movistarkoi.com",
                         "sobrinocalzado2001ivan76@gmail.com",
@@ -135,8 +134,6 @@ class LoginActivity : AppCompatActivity() {
         val finalRole = if (role != null) {
             role
         } else {
-            // Para usuarios existentes, mantener su rol actual
-            // Para nuevos usuarios, determinar si son admin
             if (isNewUser) {
                 val adminEmails = listOf(
                     "admin@movistarkoi.com",
@@ -151,9 +148,7 @@ class LoginActivity : AppCompatActivity() {
 
         val userData = hashMapOf<String, Any>(
             "email" to (user.email ?: ""),
-            "lastLogin" to com.google.firebase.Timestamp.now(),
-            "displayName" to (user.displayName ?: ""),
-            "photoUrl" to (user.photoUrl?.toString() ?: "")
+            "lastLogin" to com.google.firebase.Timestamp.now()
         )
 
         // Solo agregar rol si se está definiendo
@@ -172,14 +167,13 @@ class LoginActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Log.d(TAG, "Usuario actualizado en Firestore: ${user.email} - Rol: ${finalRole ?: "mantenido"}")
                 if (finalRole == "admin") {
-                    Toast.makeText(this, "✅ Modo Administrador activado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Modo Administrador activado", Toast.LENGTH_LONG).show()
                 }
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error actualizando usuario: ${e.message}")
             }
     }
-
     private fun checkCurrentUser() {
         if (auth.currentUser != null) {
             Log.d(TAG, "Usuario ya autenticado: ${auth.currentUser?.email}")

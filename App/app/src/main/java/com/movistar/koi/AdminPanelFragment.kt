@@ -77,7 +77,7 @@ class AdminPanelFragment : Fragment() {
                 // Opcional: mostrar mensaje más informativo
                 Toast.makeText(requireContext(), "Acceso restringido a administradores", Toast.LENGTH_LONG).show()
             } else {
-                Log.d(TAG, "✅ Usuario es administrador, mostrando panel")
+                Log.d(TAG, "Usuario es administrador, mostrando panel")
                 binding.statusText.visibility = View.GONE
                 binding.recyclerViewAdmin.visibility = View.VISIBLE
             }
