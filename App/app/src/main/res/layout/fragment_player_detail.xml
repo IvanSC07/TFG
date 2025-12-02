@@ -164,7 +164,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Estadísticas (placeholder para futura implementación) -->
+            <!-- Estadísticas -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,7 +205,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Espacio al final -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />

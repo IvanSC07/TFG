@@ -5,10 +5,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.movistar.koi.data.News
 
+/**
+ * Servicio para reaccionar a noticias
+ */
 class ReactionService {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
+    /**
+     * Añade una reacción a una noticia
+     */
     fun addReaction(newsId: String, reactionType: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -30,7 +36,7 @@ class ReactionService {
             val updatedReactions = news?.reactions?.toMutableMap() ?: mutableMapOf()
             val updatedUserReactions = news?.userReactions?.toMutableMap() ?: mutableMapOf()
 
-            // Si el usuario ya tenía una reacción, la removemos
+            // Si el usuario ya tenía una reacción, la quitamos
             val previousReaction = updatedUserReactions[userId]
             previousReaction?.let {
                 updatedReactions[it] = (updatedReactions[it] ?: 1) - 1
@@ -56,6 +62,9 @@ class ReactionService {
         }
     }
 
+    /**
+     * Obtiene la reacción actual de un usuario en una noticia
+     */
     fun getCurrentUserReaction(news: News): String? {
         val currentUser = auth.currentUser
         return currentUser?.uid?.let { userId ->

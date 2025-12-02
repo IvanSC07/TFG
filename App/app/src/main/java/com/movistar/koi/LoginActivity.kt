@@ -14,6 +14,9 @@ import com.google.firebase.firestore.firestore
 import com.movistar.koi.data.UserManager
 import com.movistar.koi.databinding.ActivityLoginBinding
 
+/**
+ * Actividad de login
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -24,6 +27,9 @@ class LoginActivity : AppCompatActivity() {
         private const val TAG = "LoginActivity"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -34,8 +40,10 @@ class LoginActivity : AppCompatActivity() {
         checkCurrentUser()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
-        // Botón de login manual
         binding.btnLogin.setOnClickListener {
             val email = binding.editTextEmail.text.toString().trim()
             val password = binding.editTextPassword.text.toString().trim()
@@ -72,6 +80,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicia sesión con email y contraseña
+     */
     private fun loginWithEmail(email: String, password: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnLogin.isEnabled = false
@@ -97,6 +108,9 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Registra un nuevo usuario con email y contraseña
+     */
     private fun registerWithEmail(email: String, password: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnRegister.isEnabled = false
@@ -127,6 +141,9 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Actualiza el usuario en Firestore
+     */
     private fun updateUserInFirestore(user: FirebaseUser?, role: String? = null, isNewUser: Boolean = false) {
         if (user == null) return
 
@@ -142,7 +159,7 @@ class LoginActivity : AppCompatActivity() {
                 )
                 if (adminEmails.contains(user.email?.lowercase())) "admin" else "user"
             } else {
-                null // No cambiar el rol existente
+                null
             }
         }
 
@@ -174,6 +191,10 @@ class LoginActivity : AppCompatActivity() {
                 Log.e(TAG, "Error actualizando usuario: ${e.message}")
             }
     }
+
+    /**
+     * Comprueba si el usuario ya está autenticado
+     */
     private fun checkCurrentUser() {
         if (auth.currentUser != null) {
             Log.d(TAG, "Usuario ya autenticado: ${auth.currentUser?.email}")
@@ -181,17 +202,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Continua como invitado
+     */
     private fun continueAsGuest() {
         Log.d(TAG, "Continuando como invitado")
         goToMainActivity()
     }
 
+    /**
+     * Navega a la pantalla principal
+     */
     private fun goToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
 
+    /**
+     * Maneja el botón de retroceso
+     */
     override fun onBackPressed() {
         finishAffinity()
     }

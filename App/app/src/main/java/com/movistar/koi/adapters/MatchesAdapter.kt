@@ -19,17 +19,23 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 /**
- * Adaptador para mostrar la lista de partidos en un RecyclerView
+ * Adapter para mostrar partidos en un RecyclerView
  */
 class MatchesAdapter(
     private var matchesList: List<Match> = emptyList(),
     private val onItemClick: (Match) -> Unit = {}
 ) : RecyclerView.Adapter<MatchesAdapter.MatchViewHolder>() {
 
+    /**
+     * Constantes para el adapter
+     */
     companion object {
         private const val TAG = "MatchesAdapter"
     }
 
+    /**
+     * ViewHolder para mostrar un partido
+     */
     inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val competition: TextView = itemView.findViewById(R.id.matchCompetition)
         private val koiLogo: ImageView = itemView.findViewById(R.id.koiLogo)
@@ -41,7 +47,7 @@ class MatchesAdapter(
         private val watchStreamButton: Button = itemView.findViewById(R.id.watchStreamButton)
 
         /**
-         * Vincula los datos de un partido con las vistas
+         * Enlaza los datos de un partido con la vista
          */
         fun bind(match: Match) {
             // Configurar competición
@@ -58,7 +64,6 @@ class MatchesAdapter(
                     .centerInside()
                     .into(opponentLogo)
             } else {
-                // Si no hay logo, mostrar placeholder
                 opponentLogo.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.koi_light_gray))
             }
 
@@ -122,13 +127,10 @@ class MatchesAdapter(
                     onItemClick(match)
                 }, 100)
             }
-
-            // Log para debugging
-            Log.d(TAG, "Partido bindeado: ${match.opponent} - ${match.status} - Stream: ${match.streamUrl}")
         }
 
         /**
-         * Abre el stream en el navegador o app de Twitch
+         * Abre el stream en la app de Twitch o en el navegador
          */
         private fun openStream(streamUrl: String, context: Context) {
             try {
@@ -159,13 +161,11 @@ class MatchesAdapter(
             } catch (e: Exception) {
                 Log.e(TAG, "Error abriendo stream: ${e.message}", e)
 
-                // Fallback: intentar abrir en navegador
                 try {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
                     context.startActivity(browserIntent)
                 } catch (e2: Exception) {
                     Log.e(TAG, "Error incluso con fallback: ${e2.message}")
-                    // Podrías mostrar un Toast al usuario aquí
                 }
             }
         }
@@ -192,14 +192,14 @@ class MatchesAdapter(
     }
 
     /**
-     * Retorna el tamaño del dataset (invocado por el layout manager)
+     * Devuelve el número de elementos en la lista
      */
     override fun getItemCount(): Int {
         return matchesList.size
     }
 
     /**
-     * Actualiza la lista de partidos y notifica al adapter
+     * Actualiza la lista de partidos y notifica al adaptador
      */
     fun updateMatches(newMatchesList: List<Match>) {
         matchesList = newMatchesList

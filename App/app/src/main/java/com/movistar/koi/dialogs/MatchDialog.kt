@@ -25,6 +25,9 @@ import com.movistar.koi.databinding.DialogMatchBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Dialogo para crear o editar un partido
+ */
 class MatchDialog : DialogFragment() {
 
     private var _binding: DialogMatchBinding? = null
@@ -33,20 +36,35 @@ class MatchDialog : DialogFragment() {
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-    // Callback para notificar al fragment padre
+    /**
+     * Callback para notificar que el partido se ha guardado
+     */
     private var onMatchSavedListener: (() -> Unit)? = null
+
+    /**
+     * Calendario para seleccionar la fecha y hora
+     */
     private var selectedCalendar: Calendar = Calendar.getInstance()
 
-    // Para seleccionar imagen de la galería
+    /**
+     * Abre la galería para seleccionar una imagen
+     */
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             uploadImageToFirebaseStorage(it)
         }
     }
 
+    /**
+     * Instancia del diálogo
+     */
     companion object {
         private const val TAG = "MatchDialog"
 
+        /**
+         * Crea una nueva instancia del diálogo
+         * @param match Partido existente para editar, si es nulo se crea uno nuevo
+         */
         fun newInstance(match: Match? = null): MatchDialog {
             val dialog = MatchDialog()
             match?.let {
@@ -66,6 +84,9 @@ class MatchDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea el diálogo
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogMatchBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -91,6 +112,9 @@ class MatchDialog : DialogFragment() {
             .create()
     }
 
+    /**
+     * Configura los dropdowns de equipos y estados del partido
+     */
     private fun setupDropdowns() {
         // Estados del partido
         val statuses = arrayOf("scheduled", "live", "finished")
@@ -99,6 +123,9 @@ class MatchDialog : DialogFragment() {
         binding.spinnerStatus.adapter = statusAdapter
     }
 
+    /**
+     * Carga equipos desde Firestore
+     */
     private fun loadTeamsFromFirestore() {
         FirebaseFirestore.getInstance().collection("teams")
             .get()
@@ -116,7 +143,7 @@ class MatchDialog : DialogFragment() {
 
                 // Si no hay equipos, usar valores por defecto
                 if (teamNames.isEmpty()) {
-                    teamNames.addAll(arrayOf("VALORANT", "League of Legends", "Rocket League", "Fortnite", "FIFA"))
+                    teamNames.addAll(arrayOf("VALORANT", "League of Legends", "Pokémon", "TFT", "Call of Duty"))
                 }
 
                 val teamAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, teamNames)
@@ -134,13 +161,16 @@ class MatchDialog : DialogFragment() {
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error cargando equipos:", exception)
                 // Fallback a valores por defecto
-                val defaultTeams = arrayOf("VALORANT", "League of Legends", "Rocket League", "Fortnite", "FIFA")
+                val defaultTeams = arrayOf("VALORANT", "League of Legends", "Pokémon", "TFT", "Call Of Duty")
                 val teamAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, defaultTeams)
                 teamAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.spinnerTeam.adapter = teamAdapter
             }
     }
 
+    /**
+     * Carga datos existentes del partido
+     */
     private fun loadExistingData() {
         arguments?.let { args ->
             val matchId = args.getString("id") ?: ""
@@ -164,7 +194,7 @@ class MatchDialog : DialogFragment() {
             binding.editTextOpponentLogo.setText(existingMatch?.opponentLogo)
             binding.editTextStreamUrl.setText(existingMatch?.streamUrl)
 
-            // Configurar fecha y hora - NUEVO
+            // Configurar fecha y hora
             val calendar = Calendar.getInstance().apply {
                 time = existingMatch?.date ?: Date()
             }
@@ -185,6 +215,9 @@ class MatchDialog : DialogFragment() {
     }
 
 
+    /**
+     * Selecciona un valor en un Spinner
+     */
     private fun selectSpinnerValue(spinner: android.widget.Spinner, value: String) {
         val adapter = spinner.adapter as ArrayAdapter<*>
         for (i in 0 until adapter.count) {
@@ -195,6 +228,9 @@ class MatchDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Configura los listeners de los botones
+     */
     private fun setupListeners() {
         binding.buttonSelectLogo.setOnClickListener {
             pickImage.launch("image/*")
@@ -205,7 +241,6 @@ class MatchDialog : DialogFragment() {
             binding.editTextOpponentLogo.setText("")
         }
 
-        // Nuevos listeners para fecha y hora
         binding.editTextDate.setOnClickListener {
             showDatePickerDialog()
         }
@@ -215,6 +250,9 @@ class MatchDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Muestra el diálogo de selección de fecha y hora
+     */
     private fun showDatePickerDialog() {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
@@ -231,6 +269,9 @@ class MatchDialog : DialogFragment() {
         datePickerDialog.show()
     }
 
+    /**
+     * Muestra el diálogo de selección de hora
+     */
     private fun showTimePickerDialog() {
         val timePickerDialog = TimePickerDialog(
             requireContext(),
@@ -246,6 +287,9 @@ class MatchDialog : DialogFragment() {
         timePickerDialog.show()
     }
 
+    /**
+     * Actualiza los campos de fecha y hora en el diálogo
+     */
     private fun updateDateAndTimeViews() {
         val dateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -254,6 +298,9 @@ class MatchDialog : DialogFragment() {
         binding.editTextTime.setText(timeFormat.format(selectedCalendar.time))
     }
 
+    /**
+     * Subir imagen a Firebase Storage
+     */
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
         val filename = "opponent_logos/${System.currentTimeMillis()}.jpg"
         val storageRef = storage.reference.child(filename)
@@ -283,6 +330,9 @@ class MatchDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Guarda el partido
+     */
     private fun saveMatch() {
         val opponent = binding.editTextOpponent.text.toString().trim()
         val competition = binding.editTextCompetition.text.toString().trim()
@@ -312,11 +362,11 @@ class MatchDialog : DialogFragment() {
                 team = team,
                 opponentLogo = opponentLogo,
                 streamUrl = streamUrl,
-                date = date  // Asignar la fecha corregida
+                date = date
             )
         } else {
             Match(
-                date = date,  // Asignar la fecha corregida
+                date = date,
                 opponent = opponent,
                 competition = competition,
                 result = result,
@@ -333,6 +383,10 @@ class MatchDialog : DialogFragment() {
             createMatch(matchToSave)
         }
     }
+
+    /**
+     * Crea un partido
+     */
     private fun createMatch(match: Match) {
         val newDocRef = db.collection("matches").document()
         val matchWithId = match.copy(id = newDocRef.id)
@@ -341,13 +395,16 @@ class MatchDialog : DialogFragment() {
             .addOnSuccessListener {
                 showToast("Partido creado exitosamente")
                 dismissSafely()
-                notifyParentToReload() // LLAMAR AL MÉTODO DE NOTIFICACIÓN
+                notifyParentToReload()
             }
             .addOnFailureListener { e ->
                 showToast("Error creando partido: ${e.message}")
             }
     }
 
+    /**
+     * Actualiza un partido
+     */
     private fun updateMatch(match: Match) {
         if (match.id.isEmpty()) {
             showToast("Error: ID de partido inválido")
@@ -359,29 +416,41 @@ class MatchDialog : DialogFragment() {
             .addOnSuccessListener {
                 showToast("Partido actualizado exitosamente")
                 dismissSafely()
-                notifyParentToReload() // LLAMAR AL MÉTODO DE NOTIFICACIÓN
+                notifyParentToReload()
             }
             .addOnFailureListener { e ->
                 showToast("Error actualizando partido: ${e.message}")
             }
     }
 
+    /**
+     * Notifica al padre que se debe recargar la lista de partidos
+     */
     private fun notifyParentToReload() {
         (targetFragment as? ManageMatchesFragment)?.loadMatches()
     }
 
+    /**
+     * Muestra un Toast
+     */
     private fun showToast(message: String) {
         if (isAdded && context != null) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
+    /**
+     * Cierra el diálogo
+     */
     private fun dismissSafely() {
         if (isAdded) {
             dismiss()
         }
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

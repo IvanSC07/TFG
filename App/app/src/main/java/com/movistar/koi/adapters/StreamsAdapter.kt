@@ -17,7 +17,7 @@ import com.movistar.koi.StreamPlayerActivity
 import com.movistar.koi.data.Stream
 
 /**
- * Adaptador para mostrar la lista de streams en un RecyclerView
+ * Adaptador para mostrar los streams en un RecyclerView
  */
 class StreamsAdapter(
     private var streamsList: List<Stream> = emptyList(),
@@ -25,10 +25,16 @@ class StreamsAdapter(
     private val isAdminView: Boolean = false  // Nuevo parámetro para diferenciar vistas
 ) : RecyclerView.Adapter<StreamsAdapter.StreamViewHolder>() {
 
+    /**
+     * Constantes para el adapter
+     */
     companion object {
         private const val TAG = "StreamsAdapter"
     }
 
+    /**
+     * ViewHolder para mostrar un stream
+     */
     inner class StreamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val streamThumbnail: ImageView = itemView.findViewById(R.id.streamThumbnail)
         private val streamLiveBadge: TextView = itemView.findViewById(R.id.streamLiveBadge)
@@ -38,8 +44,10 @@ class StreamsAdapter(
         private val streamDescription: TextView = itemView.findViewById(R.id.streamDescription)
         private val btnWatchStream: Button = itemView.findViewById(R.id.btnWatchStream)
 
+        /**
+         * Enlaza los datos de un stream con la vista
+         */
         fun bind(stream: Stream) {
-            // Cargar thumbnail
             if (stream.thumbnail.isNotEmpty()) {
                 Glide.with(itemView.context)
                     .load(stream.thumbnail)
@@ -49,7 +57,6 @@ class StreamsAdapter(
                     .into(streamThumbnail)
             }
 
-            // Configurar badge EN DIRECTO
             if (stream.isLive) {
                 streamLiveBadge.visibility = View.VISIBLE
                 btnWatchStream.text = "VER EN DIRECTO"
@@ -89,16 +96,14 @@ class StreamsAdapter(
 
             // Configurar comportamiento según el tipo de vista
             if (isAdminView) {
-                // En vista admin: click en item muestra acciones, botón abre stream
                 itemView.setOnClickListener {
-                    onItemClick(stream)  // Esto mostrará el diálogo de acciones
+                    onItemClick(stream)
                 }
 
                 btnWatchStream.setOnClickListener {
                     openStream(stream, itemView.context)
                 }
             } else {
-                // En vista pública: tanto el item como el botón abren el stream
                 itemView.setOnClickListener {
                     openStream(stream, itemView.context)
                 }
@@ -112,7 +117,7 @@ class StreamsAdapter(
         }
 
         /**
-         * Abre el stream en el navegador o app nativa
+         * Abre el stream en la app de la plataforma o en el navegador
          */
         private fun openStream(stream: Stream, context: Context) {
             try {
@@ -130,14 +135,12 @@ class StreamsAdapter(
                     if (intent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(intent)
                     } else {
-                        // Fallback: abrir en navegador
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(stream.streamUrl))
                         context.startActivity(browserIntent)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error abriendo stream: ${e.message}")
-                // Fallback a intent normal en caso de error
                 try {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(stream.streamUrl))
                     context.startActivity(intent)
@@ -148,18 +151,30 @@ class StreamsAdapter(
         }
     }
 
+    /**
+     * Crea un nuevo ViewHolder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StreamViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_stream, parent, false)
         return StreamViewHolder(view)
     }
 
+    /**
+     * Enlaza los datos de un stream con un ViewHolder
+     */
     override fun onBindViewHolder(holder: StreamViewHolder, position: Int) {
         holder.bind(streamsList[position])
     }
 
+    /**
+     * Devuelve el número de elementos en la lista
+     */
     override fun getItemCount(): Int = streamsList.size
 
+    /**
+     * Actualiza la lista de streams y notifica al adaptador
+     */
     fun updateStreams(newStreamsList: List<Stream>) {
         streamsList = newStreamsList
         notifyDataSetChanged()

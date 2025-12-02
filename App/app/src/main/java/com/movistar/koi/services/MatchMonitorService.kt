@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 /**
- * Servicio que monitorea partidos en segundo plano y envía notificaciones
+ * Servicio para monitoreo de partidos
  */
 class MatchMonitorService : Service() {
 
@@ -26,12 +26,15 @@ class MatchMonitorService : Service() {
     private var scheduledMatches = mutableSetOf<String>()
     private val alarmManager by lazy { getSystemService(Context.ALARM_SERVICE) as AlarmManager }
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "MatchMonitorService"
         private const val NOTIFICATION_ID = 1003
         private const val CHANNEL_ID = "match_alerts_channel"
 
-        // Tiempos de notificación antes del partido (en minutos)
+        // Tiempos de notificación antes del partido
         private val NOTIFICATION_TIMES = listOf(60, 30, 10) // 1 hora, 30 min, 10 min
 
         fun startService(context: Context) {
@@ -44,22 +47,31 @@ class MatchMonitorService : Service() {
         }
     }
 
+    /**
+     * Inicia el servicio
+     */
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "🔄 Servicio de monitoreo de partidos iniciado")
+        Log.d(TAG, "Servicio de monitoreo de partidos iniciado")
         createNotificationChannel()
         startForegroundService()
     }
 
+    /**
+     * Maneja la ejecución del servicio
+     */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startMonitoringMatches()
         return START_STICKY
     }
 
+    /**
+     * No se usa en este caso
+     */
     override fun onBind(intent: Intent?): IBinder? = null
 
     /**
-     * Inicia el monitoreo de partidos desde Firestore
+     * Inicia el monitoreo de partidos
      */
     private fun startMonitoringMatches() {
         Log.d(TAG, "Iniciando monitoreo de partidos...")
@@ -110,7 +122,7 @@ class MatchMonitorService : Service() {
     }
 
     /**
-     * Programa notificaciones para un partido futuro
+     * Programa las notificaciones para un partido
      */
     private fun scheduleMatchNotifications(match: Match) {
         val now = Date()
@@ -126,7 +138,6 @@ class MatchMonitorService : Service() {
         NOTIFICATION_TIMES.forEach { minutesBefore ->
             val notificationTime = Date(matchTime.time - TimeUnit.MINUTES.toMillis(minutesBefore.toLong()))
 
-            // Solo programar si la notificación es en el futuro
             if (notificationTime.after(now)) {
                 scheduleNotification(match, notificationTime, minutesBefore)
             }
@@ -134,7 +145,7 @@ class MatchMonitorService : Service() {
     }
 
     /**
-     * Programa una notificación específica
+     * Programa una notificación para un partido
      */
     private fun scheduleNotification(match: Match, time: Date, minutesBefore: Int) {
         val intent = Intent(this, MatchNotificationReceiver::class.java).apply {
@@ -170,7 +181,7 @@ class MatchMonitorService : Service() {
     }
 
     /**
-     * Envía notificación de partido en directo
+     * Notifica que el partido empezó
      */
     private fun sendLiveMatchNotification(match: Match) {
         Log.d(TAG, "Notificando partido en directo: ${match.opponent}")
@@ -210,7 +221,7 @@ class MatchMonitorService : Service() {
     }
 
     /**
-     * Crea el canal de notificación
+     * Crea el canal de notificaciones
      */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -258,6 +269,9 @@ class MatchMonitorService : Service() {
         return System.currentTimeMillis().toInt()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroy() {
         super.onDestroy()
         matchesListener?.remove()

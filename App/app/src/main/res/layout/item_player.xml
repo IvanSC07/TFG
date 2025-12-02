@@ -81,7 +81,7 @@
 
             </LinearLayout>
 
-            <!-- Equipo (NUEVO) -->
+            <!-- Equipo -->
             <TextView
                 android:id="@+id/playerTeam"
                 android:layout_width="match_parent"

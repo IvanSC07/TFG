@@ -4,6 +4,9 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+/**
+ * Objeto de gestión de usuarios
+ */
 object UserManager {
     private const val TAG = "UserManager"
 
@@ -60,6 +63,9 @@ object UserManager {
             }
     }
 
+    /**
+     * Crea un documento de usuario por defecto
+     */
     private fun createDefaultUserDocument(user: com.google.firebase.auth.FirebaseUser, callback: (String) -> Unit) {
         val userData = hashMapOf<String, Any>(
             "email" to (user.email ?: ""),
@@ -94,12 +100,12 @@ object UserManager {
     }
 
     /**
-     * Limpia el cache (útil después de logout o cambio de usuario)
+     * Limpia el cache
      */
     fun clearCache() {
         currentUserRole = null
         lastUserId = null
-        Log.d(TAG, "Cache de usuario limpiado")
+        Log.d(TAG, "Caché de usuario limpiado")
     }
 
     /**

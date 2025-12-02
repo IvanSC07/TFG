@@ -133,7 +133,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Añade esto después de la tarjeta de información -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

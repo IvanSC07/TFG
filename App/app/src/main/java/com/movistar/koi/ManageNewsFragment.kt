@@ -16,6 +16,9 @@ import com.movistar.koi.databinding.FragmentManageNewsBinding
 import com.movistar.koi.dialogs.NewsDialog
 import com.movistar.koi.services.ReactionService
 
+/**
+ * Fragmento para gestionar noticias
+ */
 class ManageNewsFragment : Fragment() {
 
     private var _binding: FragmentManageNewsBinding? = null
@@ -29,6 +32,9 @@ class ManageNewsFragment : Fragment() {
         private const val REQUEST_CODE_NEWS_DIALOG = 1001
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +44,9 @@ class ManageNewsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,6 +54,9 @@ class ManageNewsFragment : Fragment() {
         loadNews()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         binding.toolbar.title = "Gestionar Noticias"
         binding.toolbar.setNavigationOnClickListener {
@@ -72,6 +84,9 @@ class ManageNewsFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga las noticias
+     */
     fun loadNews() {
         binding.progressBar.visibility = View.VISIBLE
         binding.recyclerViewNews.visibility = View.GONE
@@ -111,12 +126,18 @@ class ManageNewsFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra el diálogo para agregar una noticia
+     */
     private fun showAddNewsDialog() {
         val dialog = NewsDialog.newInstance()
         dialog.setTargetFragment(this, REQUEST_CODE_NEWS_DIALOG)
         dialog.show(parentFragmentManager, "news_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para una noticia
+     */
     private fun showNewsActionsDialog(news: News) {
         val options = arrayOf("Editar", "Eliminar", "Cancelar")
 
@@ -131,12 +152,18 @@ class ManageNewsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita una noticia
+     */
     private fun editNews(news: News) {
         val dialog = NewsDialog.newInstance(news)
         dialog.setTargetFragment(this, REQUEST_CODE_NEWS_DIALOG)
         dialog.show(parentFragmentManager, "edit_news_dialog")
     }
 
+    /**
+     * Elimina una noticia
+     */
     private fun deleteNews(news: News) {
         if (news.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
@@ -153,6 +180,9 @@ class ManageNewsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación de una noticia
+     */
     private fun performDeleteNews(news: News) {
         if (news.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: ID de noticia inválido", Toast.LENGTH_LONG).show()
@@ -174,6 +204,9 @@ class ManageNewsFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de noticias
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

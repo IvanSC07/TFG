@@ -1,4 +1,3 @@
-// data/CalendarEvent.kt
 package com.movistar.koi.data
 
 import java.util.*

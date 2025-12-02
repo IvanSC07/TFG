@@ -11,7 +11,7 @@ import com.movistar.koi.data.Player
 import com.movistar.koi.databinding.FragmentPlayerDetailBinding
 
 /**
- * Fragmento para mostrar el detalle completo de un jugador
+ * Fragmento para mostrar el detalle de un jugador
  */
 class PlayerDetailFragment : Fragment() {
 
@@ -19,11 +19,14 @@ class PlayerDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var currentPlayer: Player
 
+    /**
+     * Crea la vista
+     */
     companion object {
         private const val TAG = "PlayerDetailFragment"
 
         /**
-         * Crea una nueva instancia del fragmento de detalle de jugador
+         * Crea una nueva instancia del fragmento con los argumentos necesarios
          */
         fun newInstance(player: Player): PlayerDetailFragment {
             val fragment = PlayerDetailFragment()
@@ -42,6 +45,9 @@ class PlayerDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +57,9 @@ class PlayerDetailFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -65,7 +74,6 @@ class PlayerDetailFragment : Fragment() {
         val age = arguments?.getInt("player_age") ?: 0
         val bio = arguments?.getString("player_bio") ?: ""
 
-        // Reconstruir el objeto Player
         currentPlayer = Player(
             id = id,
             name = name,
@@ -98,17 +106,17 @@ class PlayerDetailFragment : Fragment() {
                 .into(binding.playerDetailPhoto)
         }
 
-        // Configurar información básica
+        // Configura información básica
         binding.playerDetailRole.text = currentPlayer.role
         binding.playerDetailNickname.text = currentPlayer.nickname
         binding.playerDetailName.text = currentPlayer.name
 
-        // Configurar información adicional
+        // Configura información adicional
         binding.playerDetailNationality.text = "${getFlagEmoji(currentPlayer.nationality)} ${currentPlayer.nationality}"
         binding.playerDetailAge.text = "${currentPlayer.age} años"
         binding.playerDetailTeam.text = currentPlayer.team
 
-        // Configurar biografía
+        // Configura biografía
         if (currentPlayer.bio.isNotEmpty()) {
             binding.playerDetailBio.text = currentPlayer.bio
         } else {
@@ -161,6 +169,9 @@ class PlayerDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

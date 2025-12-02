@@ -48,6 +48,9 @@ class TeamDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,6 +60,9 @@ class TeamDetailFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -70,7 +76,6 @@ class TeamDetailFragment : Fragment() {
         val achievements = arguments?.getStringArrayList("team_achievements") ?: ArrayList()
         val playersIds = arguments?.getStringArrayList("team_players") ?: ArrayList()
 
-        // Reconstruir el objeto Team
         currentTeam = Team(
             name = name,
             game = game,
@@ -116,7 +121,7 @@ class TeamDetailFragment : Fragment() {
         // Configurar logros
         setupAchievements()
 
-        Log.d(TAG, "🏆 Mostrando detalle de equipo: ${currentTeam.name}")
+        Log.d(TAG, "Mostrando detalle de equipo: ${currentTeam.name}")
     }
 
     /**
@@ -176,7 +181,7 @@ class TeamDetailFragment : Fragment() {
         binding.teamDetailPlayersCount.text = "${playerIds.size} jugadores"
         binding.progressBarPlayers.visibility = View.VISIBLE
 
-        Log.d(TAG, "📋 Cargando ${playerIds.size} jugadores desde Firebase")
+        Log.d(TAG, "Cargando ${playerIds.size} jugadores desde Firebase")
 
         // Limpiar lista actual
         playersList.clear()
@@ -195,24 +200,23 @@ class TeamDetailFragment : Fragment() {
                             val player = document.toObject(Player::class.java)
                             player?.let {
                                 playersList.add(it)
-                                Log.d(TAG, "✅ Jugador cargado: ${it.nickname}")
+                                Log.d(TAG, "Jugador cargado: ${it.nickname}")
                             }
                         } catch (e: Exception) {
-                            Log.e(TAG, "❌ Error convirtiendo jugador $playerId: ${e.message}")
+                            Log.e(TAG, "Error convirtiendo jugador $playerId: ${e.message}")
                         }
                     } else {
-                        Log.w(TAG, "⚠️ Jugador no encontrado: $playerId")
+                        Log.w(TAG, "Jugador no encontrado: $playerId")
                     }
 
                     loadedCount++
 
-                    // Cuando hayamos cargado todos los jugadores, actualizar el adapter
                     if (loadedCount == totalPlayers) {
                         onPlayersLoaded()
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.e(TAG, "❌ Error cargando jugador $playerId: ${exception.message}")
+                    Log.e(TAG, "Error cargando jugador $playerId: ${exception.message}")
                     loadedCount++
 
                     if (loadedCount == totalPlayers) {
@@ -238,10 +242,10 @@ class TeamDetailFragment : Fragment() {
             playersAdapter.updatePlayers(playersList)
             binding.teamDetailPlayers.text = "Plantilla completa cargada"
 
-            Log.d(TAG, "✅ ${playersList.size} jugadores cargados y mostrados")
+            Log.d(TAG, "${playersList.size} jugadores cargados y mostrados")
         } else {
             binding.teamDetailPlayers.text = "No se pudieron cargar los jugadores"
-            Log.w(TAG, "⚠️ No se pudieron cargar los jugadores")
+            Log.w(TAG, "No se pudieron cargar los jugadores")
         }
     }
 
@@ -256,6 +260,9 @@ class TeamDetailFragment : Fragment() {
         ).show()
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -17,18 +17,24 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 /**
- * Worker que monitorea partidos periódicamente usando WorkManager
+ * Servicio para monitoreo de partidos
  */
 class MatchMonitorWorker(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "MatchMonitorWorker"
         private const val CHANNEL_ID = "match_alerts_channel"
     }
 
+    /**
+     * Inicia el servicio
+     */
     override suspend fun doWork(): Result {
         Log.d(TAG, "Worker de monitoreo ejecutándose...")
 

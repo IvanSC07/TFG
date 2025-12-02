@@ -2,6 +2,9 @@ package com.movistar.koi.data
 
 import java.util.Date
 
+/**
+ * Modelo de datos para representar una noticia
+ */
 data class News(
     val id: String = "",
     val title: String = "",
@@ -17,6 +20,9 @@ data class News(
 ) {
     constructor() : this("", "", "", "", Date(), "general", "Movistar KOI", true, emptyList(), emptyMap(), emptyMap())
 
+    /**
+     * Obtiene el ID del documento para Firestore
+     */
     fun getDocumentId(): String {
         return if (id.isEmpty()) {
             "${title.hashCode()}-${date.time}"
@@ -25,7 +31,4 @@ data class News(
         }
     }
 
-    fun getTotalReactions(): Int {
-        return reactions.values.sum()
-    }
 }

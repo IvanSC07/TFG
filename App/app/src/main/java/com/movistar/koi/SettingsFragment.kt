@@ -32,6 +32,9 @@ class SettingsFragment : Fragment() {
         private const val KEY_MATCH_ALERTS = "match_alerts_enabled"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,6 +44,9 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,6 +56,9 @@ class SettingsFragment : Fragment() {
         setupTestButtons()
     }
 
+    /**
+     * Carga las preferencias de configuración
+     */
     private fun loadSettings() {
         val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -60,6 +69,9 @@ class SettingsFragment : Fragment() {
         binding.switchMatchAlerts.isChecked = matchAlertsEnabled
     }
 
+    /**
+     * Configura los listeners de clics
+     */
     private fun setupClickListeners() {
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             saveSetting(KEY_NOTIFICATIONS, isChecked)
@@ -82,18 +94,25 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    /**
+     * Guarda una configuración
+     */
     private fun saveSetting(key: String, value: Boolean) {
         val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putBoolean(key, value).apply()
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-
-
+    /**
+     * Configura los botones de prueba
+     */
     private fun setupTestButtons() {
         binding.btnTestNotification.setOnClickListener {
             testNotification()
@@ -105,7 +124,7 @@ class SettingsFragment : Fragment() {
     }
 
     /**
-     * Prueba una notificación básica
+     * Prueba una notificación
      */
     private fun testNotification() {
         Log.d(TAG, "Iniciando prueba de notificación...")
@@ -126,7 +145,6 @@ class SettingsFragment : Fragment() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Intent para abrir la app
         val intent = Intent(requireContext(), MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -165,7 +183,6 @@ class SettingsFragment : Fragment() {
 
         val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Crear canal para partidos
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "match_channel",
@@ -180,7 +197,6 @@ class SettingsFragment : Fragment() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Intent para abrir directamente a partidos
         val intent = Intent(requireContext(), MainActivity::class.java).apply {
             putExtra("open_fragment", "matches")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

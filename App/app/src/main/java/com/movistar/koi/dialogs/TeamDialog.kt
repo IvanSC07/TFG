@@ -17,6 +17,9 @@ import com.movistar.koi.data.Team
 import com.movistar.koi.databinding.DialogTeamBinding
 import java.util.*
 
+/**
+ * Dialogo para crear o editar un equipo
+ */
 class TeamDialog : DialogFragment() {
 
     private var _binding: DialogTeamBinding? = null
@@ -35,9 +38,16 @@ class TeamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Instancia del diálogo
+     */
     companion object {
         private const val TAG = "TeamDialog"
 
+        /**
+         * Crea una nueva instancia del diálogo
+         * @param team Equipo existente para editar, si es nulo se crea uno nuevo
+         */
         fun newInstance(team: Team? = null): TeamDialog {
             val dialog = TeamDialog()
             team?.let {
@@ -56,13 +66,15 @@ class TeamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea el diálogo
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogTeamBinding.inflate(LayoutInflater.from(requireContext()))
 
         // Cargar datos existentes si estamos editando
         loadExistingData()
 
-        // Configurar listeners
         setupListeners()
 
         return AlertDialog.Builder(requireContext())
@@ -75,6 +87,9 @@ class TeamDialog : DialogFragment() {
             .create()
     }
 
+    /**
+     * Carga datos existentes del equipo
+     */
     private fun loadExistingData() {
         arguments?.let { args ->
             val teamId = args.getString("id") ?: ""
@@ -92,7 +107,7 @@ class TeamDialog : DialogFragment() {
 
             // Llenar los campos
             binding.editTextName.setText(existingTeam?.name)
-            binding.editTextGame.setText(existingTeam?.game) // Ahora es EditText
+            binding.editTextGame.setText(existingTeam?.game)
             binding.editTextCompetition.setText(existingTeam?.competition)
             binding.editTextDescription.setText(existingTeam?.description)
             binding.editTextCoach.setText(existingTeam?.coach)
@@ -108,6 +123,9 @@ class TeamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Configura los listeners de los botones
+     */
     private fun setupListeners() {
         // Seleccionar imagen de galería
         binding.buttonSelectLogo.setOnClickListener {
@@ -127,6 +145,9 @@ class TeamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Muestra el diálogo para seleccionar la URL de la imagen
+     */
     private fun showImageUrlDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_image_url, null)
         val editTextUrl = dialogView.findViewById<android.widget.EditText>(R.id.editTextImageUrl)
@@ -144,6 +165,9 @@ class TeamDialog : DialogFragment() {
             .show()
     }
 
+    /**
+     * Carga una imagen desde una URL
+     */
     private fun loadImageFromUrl(url: String) {
         binding.textImageStatus.text = "Cargando imagen..."
 
@@ -159,9 +183,12 @@ class TeamDialog : DialogFragment() {
         }, 1000)
     }
 
+    /**
+     * Guarda el equipo
+     */
     private fun saveTeam() {
         val name = binding.editTextName.text.toString().trim()
-        val game = binding.editTextGame.text.toString().trim() // Ahora del EditText
+        val game = binding.editTextGame.text.toString().trim()
         val competition = binding.editTextCompetition.text.toString().trim()
         val description = binding.editTextDescription.text.toString().trim()
         val coach = binding.editTextCoach.text.toString().trim()
@@ -199,6 +226,9 @@ class TeamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea un nuevo equipo
+     */
     private fun createTeam(team: Team) {
         val newDocRef = db.collection("teams").document()
         val teamWithId = team.copy(id = newDocRef.id)
@@ -214,6 +244,9 @@ class TeamDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Actualiza un equipo
+     */
     private fun updateTeam(team: Team) {
         if (team.id.isEmpty()) {
             showToast("Error: ID de equipo inválido")
@@ -232,22 +265,34 @@ class TeamDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Muestra un Toast
+     */
     private fun showToast(message: String) {
         if (isAdded && context != null) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
+    /**
+     * Cierra el diálogo
+     */
     private fun dismissSafely() {
         if (isAdded) {
             dismiss()
         }
     }
 
+    /**
+     * Notifica al padre que se debe recargar la lista de equipos
+     */
     private fun notifyParentToReload() {
         (targetFragment as? ManageTeamsFragment)?.loadTeams()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

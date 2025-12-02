@@ -13,6 +13,9 @@ import com.movistar.koi.data.Team
 import com.movistar.koi.databinding.FragmentManageTeamsBinding
 import com.movistar.koi.dialogs.TeamDialog
 
+/**
+ * Fragmento para gestionar equipos
+ */
 class ManageTeamsFragment : Fragment() {
 
     private var _binding: FragmentManageTeamsBinding? = null
@@ -24,6 +27,9 @@ class ManageTeamsFragment : Fragment() {
         private const val TAG = "ManageTeamsFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +39,9 @@ class ManageTeamsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,6 +49,9 @@ class ManageTeamsFragment : Fragment() {
         loadTeams()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         // Configurar toolbar
         binding.toolbar.title = "Gestionar Equipos"
@@ -64,6 +76,9 @@ class ManageTeamsFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los equipos
+     */
     fun loadTeams() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -99,12 +114,18 @@ class ManageTeamsFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra el diálogo para agregar un equipo
+     */
     private fun showAddTeamDialog() {
         val dialog = TeamDialog.newInstance()
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "team_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para un equipo
+     */
     private fun showTeamActionsDialog(team: Team) {
         val options = arrayOf("Editar", "Gestionar Jugadores", "Eliminar", "Cancelar")
 
@@ -120,12 +141,18 @@ class ManageTeamsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita un equipo
+     */
     private fun editTeam(team: Team) {
         val dialog = TeamDialog.newInstance(team)
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "edit_team_dialog")
     }
 
+    /**
+     * Gestiona los jugadores de un equipo
+     */
     private fun manageTeamPlayers(team: Team) {
         val manageTeamPlayersFragment = ManageTeamPlayersFragment.newInstance(team)
         parentFragmentManager.beginTransaction()
@@ -134,6 +161,9 @@ class ManageTeamsFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Elimina un equipo
+     */
     private fun deleteTeam(team: Team) {
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Equipo")
@@ -145,6 +175,9 @@ class ManageTeamsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación de un equipo
+     */
     private fun performDeleteTeam(team: Team) {
         FirebaseConfig.teamsCollection
             .whereEqualTo("name", team.name)
@@ -164,6 +197,9 @@ class ManageTeamsFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de equipos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

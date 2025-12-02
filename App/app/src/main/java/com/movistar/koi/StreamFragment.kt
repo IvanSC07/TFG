@@ -29,6 +29,9 @@ class StreamFragment : Fragment() {
         private const val TAG = "StreamFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +41,9 @@ class StreamFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,14 +51,16 @@ class StreamFragment : Fragment() {
         loadStreams()
     }
 
+    /**
+     * Configura el RecyclerView
+     */
     private fun setupRecyclerView() {
         streamsAdapter = StreamsAdapter(
             streamsList,
             { stream ->
-                // En vista pública, el click en el item también abre el stream
                 openStream(stream.streamUrl, requireContext())
             },
-            false  // <- Vista pública
+            false
         )
 
         binding.recyclerViewStreams.apply {
@@ -62,7 +70,9 @@ class StreamFragment : Fragment() {
         }
     }
 
-    // Añade este método si no existe
+    /**
+     * Abre un stream
+     */
     private fun openStream(streamUrl: String, context: Context) {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
@@ -77,6 +87,9 @@ class StreamFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los streams
+     */
     private fun loadStreams() {
         Log.d(TAG, "Cargando streams desde Firebase")
 
@@ -90,7 +103,7 @@ class StreamFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 streamsList.clear()
 
-                Log.d(TAG, "📺 Streams encontrados: ${documents.size()}")
+                Log.d(TAG, "Streams encontrados: ${documents.size()}")
 
                 if (documents.isEmpty()) {
                     binding.statusText.text = "No hay streams disponibles"
@@ -102,14 +115,13 @@ class StreamFragment : Fragment() {
                     try {
                         val stream = document.toObject(Stream::class.java)
                         streamsList.add(stream)
-                        Log.d(TAG, "🎥 Stream: ${stream.title} - Live: ${stream.isLive}")
+                        Log.d(TAG, "Stream: ${stream.title} - Live: ${stream.isLive}")
                     } catch (e: Exception) {
-                        Log.e(TAG, "❌ Error convirtiendo stream: ${e.message}")
+                        Log.e(TAG, "Error convirtiendo stream: ${e.message}")
                     }
                 }
 
                 if (streamsList.isNotEmpty()) {
-                    // Ordenar: streams en directo primero
                     streamsList.sortByDescending { it.isLive }
 
                     streamsAdapter.updateStreams(streamsList)
@@ -117,9 +129,8 @@ class StreamFragment : Fragment() {
                     binding.recyclerViewStreams.visibility = View.VISIBLE
                     binding.statusText.visibility = View.GONE
 
-                    Log.d(TAG, "✅ ${streamsList.size} streams mostrados")
+                    Log.d(TAG, "${streamsList.size} streams mostrados")
 
-                    // Mostrar conteo de streams en directo
                     val liveCount = streamsList.count { it.isLive }
                     if (liveCount > 0) {
                         binding.statusText.text = "$liveCount streams en directo"
@@ -135,10 +146,13 @@ class StreamFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.statusText.text = "Error cargando streams: ${exception.message}"
                 binding.statusText.visibility = View.VISIBLE
-                Log.e(TAG, "❌ Error cargando streams:", exception)
+                Log.e(TAG, "Error cargando streams:", exception)
             }
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

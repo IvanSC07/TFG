@@ -20,6 +20,9 @@ import com.movistar.koi.data.News
 import com.movistar.koi.databinding.DialogNewsBinding
 import java.util.*
 
+/**
+ * Dialogo para crear o editar una noticia
+ */
 class NewsDialog : DialogFragment() {
 
     private var _binding: DialogNewsBinding? = null
@@ -35,13 +38,19 @@ class NewsDialog : DialogFragment() {
             imageUri = it
             binding.imageViewNews.setImageURI(it)
             binding.textImageStatus.text = "Imagen seleccionada - Subir al guardar"
-            // Guardamos la URI temporalmente, se subirá al guardar la noticia
         }
     }
 
+    /**
+     * Instancia del diálogo
+     */
     companion object {
         private const val TAG = "NewsDialog"
 
+        /**
+         * Crea una nueva instancia del diálogo
+         * @param news Noticia existente para editar, si es nulo se crea uno nuevo
+         */
         fun newInstance(news: News? = null): NewsDialog {
             val dialog = NewsDialog()
             news?.let {
@@ -59,6 +68,9 @@ class NewsDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea el diálogo
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogNewsBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -68,20 +80,21 @@ class NewsDialog : DialogFragment() {
         // Cargar datos existentes si estamos editando
         loadExistingData()
 
-        // Configurar listeners
         setupListeners()
 
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .setTitle(if (existingNews == null) "Crear Noticia" else "Editar Noticia")
             .setPositiveButton("Guardar") { _, _ ->
-                // Usar post para evitar problemas de contexto
                 binding.root.post { saveNews() }
             }
             .setNegativeButton("Cancelar", null)
             .create()
     }
 
+    /**
+     * Configura las categorías de noticias
+     */
     private fun setupCategories() {
         val categories = arrayOf(
             "general", "competition", "team", "player",
@@ -92,6 +105,9 @@ class NewsDialog : DialogFragment() {
         binding.spinnerCategory.adapter = adapter
     }
 
+    /**
+     * Carga datos existentes de la noticia
+     */
     private fun loadExistingData() {
         arguments?.let { args ->
             val newsId = args.getString("id") ?: ""
@@ -136,6 +152,9 @@ class NewsDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Configura los listeners de los botones
+     */
     private fun setupListeners() {
         // Seleccionar imagen de galería
         binding.buttonSelectImage.setOnClickListener {
@@ -155,6 +174,9 @@ class NewsDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Muestra el diálogo para seleccionar la URL de la imagen
+     */
     private fun showImageUrlDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_image_url, null)
         val editTextUrl = dialogView.findViewById<android.widget.EditText>(R.id.editTextImageUrl)
@@ -172,6 +194,9 @@ class NewsDialog : DialogFragment() {
             .show()
     }
 
+    /**
+     * Carga una imagen desde una URL
+     */
     private fun loadImageFromUrl(url: String) {
         binding.textImageStatus.text = "Cargando imagen..."
 
@@ -188,6 +213,9 @@ class NewsDialog : DialogFragment() {
         }, 1000)
     }
 
+    /**
+     * Guarda la noticia
+     */
     private fun saveNews() {
         val title = binding.editTextTitle.text.toString().trim()
         val content = binding.editTextContent.text.toString().trim()
@@ -208,6 +236,9 @@ class NewsDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Subir imagen a Firebase Storage y guardar noticia
+     */
     private fun uploadImageAndSaveNews(title: String, content: String, category: String, author: String) {
         if (!isAdded || _binding == null) {
             showToast("Error: Diálogo no disponible")
@@ -240,12 +271,14 @@ class NewsDialog : DialogFragment() {
                     binding.textImageStatus.text = "Error subiendo imagen"
                     showToast("Error subiendo imagen: ${e.message}")
 
-                    // Guardar noticia sin imagen como fallback
                     saveNewsToFirestore(title, content, category, author, "")
                 }
             }
     }
 
+    /**
+     * Guarda la noticia en Firestore
+     */
     private fun saveNewsToFirestore(title: String, content: String, category: String, author: String, imageUrl: String) {
         val isEditing = !existingNews?.id.isNullOrEmpty()
 
@@ -275,6 +308,9 @@ class NewsDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea una nueva noticia
+     */
     private fun createNews(news: News) {
         val newDocRef = db.collection("news").document()
         val newsWithId = news.copy(id = newDocRef.id)
@@ -290,8 +326,10 @@ class NewsDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Actualiza una noticia
+     */
     private fun updateNews(news: News) {
-        // Asegurarnos de que tenemos un ID válido
         if (news.id.isEmpty()) {
             showToast("Error: ID de noticia inválido")
             return
@@ -309,27 +347,38 @@ class NewsDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Muestra un Toast
+     */
     private fun showToast(message: String) {
         try {
             if (isAdded && context != null) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            // Log silencioso
             Log.e("NewsDialog", "Error showing toast: ${e.message}")
         }
     }
 
+    /**
+     * Cierra el diálogo
+     */
     private fun dismissSafely() {
         if (isAdded) {
             dismiss()
         }
     }
 
+    /**
+     * Notifica al padre que se debe recargar la lista de noticias
+     */
     private fun notifyParentToReload() {
         (targetFragment as? ManageNewsFragment)?.loadNews()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

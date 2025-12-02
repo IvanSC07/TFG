@@ -8,6 +8,9 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.movistar.koi.databinding.ActivityStreamPlayerBinding
 
+/**
+ * Actividad para reproducir streams
+ */
 class StreamPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStreamPlayerBinding
@@ -18,6 +21,9 @@ class StreamPlayerActivity : AppCompatActivity() {
         const val EXTRA_STREAM_TITLE = "stream_title"
     }
 
+    /**
+     * Crea la vista
+     */
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +43,9 @@ class StreamPlayerActivity : AppCompatActivity() {
         setupWebView(streamUrl, platform)
     }
 
+    /**
+     * Configura el WebView
+     */
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView(streamUrl: String, platform: String) {
         binding.webView.apply {
@@ -78,17 +87,18 @@ class StreamPlayerActivity : AppCompatActivity() {
                     view: WebView?,
                     url: String?
                 ): Boolean {
-                    // Mantener todas las navegaciones dentro del WebView
                     return false
                 }
             }
 
-            // Cargar stream optimizado según plataforma
             val optimizedUrl = getOptimizedStreamUrl(streamUrl, platform)
             loadUrl(optimizedUrl)
         }
     }
 
+    /**
+     * Obtiene la URL del stream optimizada
+     */
     private fun getOptimizedStreamUrl(originalUrl: String, platform: String): String {
         return when (platform.lowercase()) {
             "twitch" -> {
@@ -113,6 +123,9 @@ class StreamPlayerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Extrae el nombre del canal de Twitch de la URL
+     */
     private fun extractTwitchChannel(url: String): String? {
         val patterns = arrayOf(
             "twitch\\.tv/([a-zA-Z0-9_]+)",
@@ -129,6 +142,9 @@ class StreamPlayerActivity : AppCompatActivity() {
         return null
     }
 
+    /**
+     * Extrae el ID del video de YouTube de la URL
+     */
     private fun extractYouTubeVideoId(url: String): String? {
         val patterns = arrayOf(
             "youtu\\.be/([a-zA-Z0-9_-]+)",
@@ -146,12 +162,18 @@ class StreamPlayerActivity : AppCompatActivity() {
         return null
     }
 
+    /**
+     * Muestra un mensaje de error
+     */
     private fun showError(message: String) {
         binding.progressBar.visibility = android.view.View.GONE
         binding.errorText.text = message
         binding.errorText.visibility = android.view.View.VISIBLE
     }
 
+    /**
+     * Maneja el botón de retroceso
+     */
     override fun onBackPressed() {
         if (binding.webView.canGoBack()) {
             binding.webView.goBack()
@@ -160,6 +182,9 @@ class StreamPlayerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Destruye la vista
+     */
     override fun onDestroy() {
         super.onDestroy()
         binding.webView.destroy()

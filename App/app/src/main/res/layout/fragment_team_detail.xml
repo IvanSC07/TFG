@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header con gradiente y logo -->
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -158,7 +158,7 @@
                 android:layout_marginBottom="32dp"
                 android:visibility="visible" />
 
-            <!-- Logros (sección condicional) -->
+            <!-- Logros -->
             <LinearLayout
                 android:id="@+id/achievementsSection"
                 android:layout_width="match_parent"
@@ -206,7 +206,6 @@
 
             </LinearLayout>
 
-            <!-- Espacio al final -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />

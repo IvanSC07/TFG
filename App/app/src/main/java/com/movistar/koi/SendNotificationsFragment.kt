@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.movistar.koi.databinding.FragmentSendNotificationsBinding
 
+/**
+ * Fragmento para enviar notificaciones
+ */
 class SendNotificationsFragment : Fragment() {
 
     private var _binding: FragmentSendNotificationsBinding? = null
@@ -17,6 +20,9 @@ class SendNotificationsFragment : Fragment() {
         private const val TAG = "SendNotificationsFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,12 +32,18 @@ class SendNotificationsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         // Configurar toolbar
         binding.toolbar.title = "Enviar Notificaciones"
@@ -48,6 +60,9 @@ class SendNotificationsFragment : Fragment() {
         }
     }
 
+    /**
+     * Configura los tipos de notificación
+     */
     private fun setupNotificationTypes() {
         val notificationTypes = arrayOf(
             "Noticia importante",
@@ -65,6 +80,9 @@ class SendNotificationsFragment : Fragment() {
         )
     }
 
+    /**
+     * Envía la notificación
+     */
     private fun sendNotification() {
         val title = binding.editTextTitle.text?.toString()?.trim() ?: ""
         val message = binding.editTextMessage.text?.toString()?.trim() ?: ""
@@ -78,7 +96,6 @@ class SendNotificationsFragment : Fragment() {
         // Mostrar preview
         showNotificationPreview(title, message, notificationType)
 
-        // TODO: Implementar envío real a Firebase Messaging
         android.widget.Toast.makeText(requireContext(), "Enviando notificación...", android.widget.Toast.LENGTH_SHORT).show()
 
         // Simular envío
@@ -93,6 +110,9 @@ class SendNotificationsFragment : Fragment() {
         }, 2000)
     }
 
+    /**
+     * Muestra la vista de preview
+     */
     private fun showNotificationPreview(title: String, message: String, type: String) {
         binding.previewTitle.text = title
         binding.previewMessage.text = message
@@ -100,6 +120,9 @@ class SendNotificationsFragment : Fragment() {
         binding.previewCard.visibility = View.VISIBLE
     }
 
+    /**
+     * Muestra el resultado del envío de la notificación
+     */
     private fun showSendResult(success: Boolean, message: String) {
         val dialog = android.app.AlertDialog.Builder(requireContext())
             .setTitle(if (success) "✅ Éxito" else "❌ Error")
@@ -115,6 +138,9 @@ class SendNotificationsFragment : Fragment() {
         dialog.show()
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

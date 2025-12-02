@@ -14,6 +14,9 @@ import com.movistar.koi.services.ReactionService
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Adapter para mostrar noticias en un RecyclerView
+ */
 class NewsAdapter(
     private var newsList: List<News> = emptyList(),
     private val onItemClick: (News) -> Unit = {},
@@ -22,6 +25,9 @@ class NewsAdapter(
 
     private val reactionService = ReactionService()
 
+    /**
+     * ViewHolder para mostrar una noticia
+     */
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val newsImage: ImageView = itemView.findViewById(R.id.newsImage)
         private val newsCategory: TextView = itemView.findViewById(R.id.newsCategory)
@@ -30,6 +36,9 @@ class NewsAdapter(
         private val newsDate: TextView = itemView.findViewById(R.id.newsDate)
         private val reactionsRecyclerView: RecyclerView = itemView.findViewById(R.id.reactionsRecyclerView)
 
+        /**
+         * Enlaza los datos de la noticia con la vista
+         */
         fun bind(news: News) {
             // Cargar imagen con Glide
             if (news.imageUrl.isNotEmpty()) {
@@ -68,6 +77,9 @@ class NewsAdapter(
             }
         }
 
+        /**
+         * Configura el RecyclerView de reacciones para la noticia
+         */
         private fun setupReactions(news: News) {
             val currentUserReaction = reactionService.getCurrentUserReaction(news)
             val reactionsAdapter = ReactionsAdapter(
@@ -88,18 +100,30 @@ class NewsAdapter(
         }
     }
 
+    /**
+     * Crea un nuevo ViewHolder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_news, parent, false)
         return NewsViewHolder(view)
     }
 
+    /**
+     * Enlaza los datos de una noticia con un ViewHolder
+     */
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         holder.bind(newsList[position])
     }
 
+    /**
+     * Devuelve el número de elementos en la lista
+     */
     override fun getItemCount(): Int = newsList.size
 
+    /**
+     * Actualiza la lista de noticias y notifica al adaptador
+     */
     fun updateNews(newNewsList: List<News>) {
         newsList = newNewsList
         notifyDataSetChanged()

@@ -4,6 +4,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
+/**
+ * Objeto de configuración para Firebase
+ */
 object FirebaseConfig {
 
     // Instancia de Firestore para la base de datos

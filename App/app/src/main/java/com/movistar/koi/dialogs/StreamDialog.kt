@@ -15,6 +15,9 @@ import com.movistar.koi.data.Stream
 import com.movistar.koi.databinding.DialogStreamBinding
 import java.util.*
 
+/**
+ * Dialogo para crear o editar un stream
+ */
 class StreamDialog : DialogFragment() {
 
     private var _binding: DialogStreamBinding? = null
@@ -22,6 +25,9 @@ class StreamDialog : DialogFragment() {
     private var existingStream: Stream? = null
     private val db = FirebaseFirestore.getInstance()
 
+    /**
+     * Instancia del diálogo
+     */
     companion object {
         private const val TAG = "StreamDialog"
 
@@ -43,6 +49,9 @@ class StreamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea el diálogo
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogStreamBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -62,6 +71,9 @@ class StreamDialog : DialogFragment() {
             .create()
     }
 
+    /**
+     * Configura las plataformas y categorías
+     */
     private fun setupSpinners() {
         // Plataformas
         val platforms = arrayOf("twitch", "youtube")
@@ -76,6 +88,9 @@ class StreamDialog : DialogFragment() {
         binding.spinnerCategory.adapter = categoryAdapter
     }
 
+    /**
+     * Carga datos existentes del stream
+     */
     private fun loadExistingData() {
         arguments?.let { args ->
             val streamId = args.getString("id") ?: ""
@@ -128,6 +143,9 @@ class StreamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Guarda el stream
+     */
     private fun saveStream() {
         val title = binding.editTextTitle.text.toString().trim()
         val description = binding.editTextDescription.text.toString().trim()
@@ -174,6 +192,9 @@ class StreamDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea un nuevo stream
+     */
     private fun createStream(stream: Stream) {
         val newDocRef = db.collection("streams").document()
         val streamWithId = stream.copy(id = newDocRef.id)
@@ -189,6 +210,9 @@ class StreamDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Actualiza un stream
+     */
     private fun updateStream(stream: Stream) {
         if (stream.id.isEmpty()) {
             showToast("Error: ID de stream inválido")
@@ -207,22 +231,34 @@ class StreamDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Muestra un Toast
+     */
     private fun showToast(message: String) {
         if (isAdded && context != null) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
+    /**
+     * Cierra el diálogo
+     */
     private fun dismissSafely() {
         if (isAdded) {
             dismiss()
         }
     }
 
+    /**
+     * Notifica al padre que se debe recargar la lista de streams
+     */
     private fun notifyParentToReload() {
         (targetFragment as? ManageStreamsFragment)?.loadStreams()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

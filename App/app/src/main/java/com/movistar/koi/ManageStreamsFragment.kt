@@ -14,6 +14,9 @@ import com.movistar.koi.data.Stream
 import com.movistar.koi.databinding.FragmentManageStreamsBinding
 import com.movistar.koi.dialogs.StreamDialog
 
+/**
+ * Fragmento para gestionar streams
+ */
 class ManageStreamsFragment : Fragment() {
 
     private var _binding: FragmentManageStreamsBinding? = null
@@ -26,6 +29,9 @@ class ManageStreamsFragment : Fragment() {
         private const val REQUEST_CODE_STREAM_DIALOG = 1002
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +41,9 @@ class ManageStreamsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,6 +51,9 @@ class ManageStreamsFragment : Fragment() {
         loadStreams()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         // Configurar toolbar
         binding.toolbar.title = "Gestionar Streams"
@@ -68,6 +80,9 @@ class ManageStreamsFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los streams
+     */
     fun loadStreams() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -88,7 +103,6 @@ class ManageStreamsFragment : Fragment() {
                     }
                 }
 
-                // Ordenar: streams en directo primero
                 streamsList.sortByDescending { it.isLive }
 
                 streamsAdapter.updateStreams(streamsList)
@@ -117,12 +131,18 @@ class ManageStreamsFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra el diálogo para agregar un stream
+     */
     private fun showAddStreamDialog() {
         val dialog = StreamDialog.newInstance()
         dialog.setTargetFragment(this, REQUEST_CODE_STREAM_DIALOG)
         dialog.show(parentFragmentManager, "stream_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para un stream
+     */
     private fun showStreamActionsDialog(stream: Stream) {
         val options = arrayOf("Editar", "Eliminar", "Cancelar")
 
@@ -137,12 +157,18 @@ class ManageStreamsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita un stream
+     */
     private fun editStream(stream: Stream) {
         val dialog = StreamDialog.newInstance(stream)
         dialog.setTargetFragment(this, REQUEST_CODE_STREAM_DIALOG)
         dialog.show(parentFragmentManager, "edit_stream_dialog")
     }
 
+    /**
+     * Elimina un stream
+     */
     private fun deleteStream(stream: Stream) {
         if (stream.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
@@ -159,6 +185,9 @@ class ManageStreamsFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación de un stream
+     */
     private fun performDeleteStream(stream: Stream) {
         if (stream.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: ID de stream inválido", Toast.LENGTH_LONG).show()
@@ -180,6 +209,9 @@ class ManageStreamsFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de streams
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

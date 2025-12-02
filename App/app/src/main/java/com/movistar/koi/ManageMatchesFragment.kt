@@ -15,6 +15,9 @@ import com.movistar.koi.data.Match
 import com.movistar.koi.databinding.FragmentManageMatchesBinding
 import com.movistar.koi.dialogs.MatchDialog
 
+/**
+ * Fragmento para gestionar partidos
+ */
 class ManageMatchesFragment : Fragment() {
 
     private var _binding: FragmentManageMatchesBinding? = null
@@ -26,6 +29,9 @@ class ManageMatchesFragment : Fragment() {
         private const val TAG = "ManageMatchesFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +41,9 @@ class ManageMatchesFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,6 +51,9 @@ class ManageMatchesFragment : Fragment() {
         loadMatches()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         binding.toolbar.title = "Gestionar Partidos"
         binding.toolbar.setNavigationOnClickListener {
@@ -64,6 +76,9 @@ class ManageMatchesFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los partidos
+     */
     fun loadMatches() {
         binding.progressBar.visibility = View.VISIBLE
         binding.recyclerViewMatches.visibility = View.GONE
@@ -111,12 +126,18 @@ class ManageMatchesFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra el diálogo para agregar un partido
+     */
     private fun showAddMatchDialog() {
         val dialog = MatchDialog.newInstance()
-        dialog.setTargetFragment(this, 0) // ESTABLECER TARGET FRAGMENT
+        dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "match_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para un partido
+     */
     private fun showMatchActionsDialog(match: Match) {
         val options = arrayOf("Editar", "Eliminar", "Cancelar")
 
@@ -131,12 +152,18 @@ class ManageMatchesFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita un partido
+     */
     private fun editMatch(match: Match) {
         val dialog = MatchDialog.newInstance(match)
-        dialog.setTargetFragment(this, 0) // ESTABLECER TARGET FRAGMENT
+        dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "edit_match_dialog")
     }
 
+    /**
+     * Elimina un partido
+     */
     private fun deleteMatch(match: Match) {
         if (match.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: No se puede eliminar - ID inválido", Toast.LENGTH_LONG).show()
@@ -153,6 +180,9 @@ class ManageMatchesFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación de un partido
+     */
     private fun performDeleteMatch(match: Match) {
         if (match.id.isEmpty()) {
             Toast.makeText(requireContext(), "Error: ID de partido inválido", Toast.LENGTH_LONG).show()
@@ -174,6 +204,9 @@ class ManageMatchesFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de partidos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

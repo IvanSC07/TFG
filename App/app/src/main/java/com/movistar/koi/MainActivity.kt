@@ -24,6 +24,9 @@ import com.movistar.koi.databinding.ActivityMainBinding
 import com.movistar.koi.workers.MatchMonitorWorker
 import java.util.concurrent.TimeUnit
 
+/**
+ * Actividad principal
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -37,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         private const val PERMISSION_REQUEST_CODE = 1001
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,6 +51,10 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         setupUserInterface()
     }
+
+    /**
+     * Configura la interfaz de usuario
+     */
         private fun setupUserInterface() {
             setupToolbar()
             setupNavigation()
@@ -56,12 +66,15 @@ class MainActivity : AppCompatActivity() {
                 loadFragment(NewsFragment())
             }
         }
+
+    /**
+     * Comprueba el rol del usuario
+     */
     private fun checkUserRole() {
         UserManager.getUserRole { role ->
             isUserAdmin = role == UserManager.ROLE_ADMIN
             Log.d(TAG, "Usuario es admin: $isUserAdmin")
 
-            // Actualizar el menú si es necesario
             invalidateOptionsMenu()
 
             // Mostrar mensaje si es admin
@@ -72,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Configura la toolbar con el menú de 3 puntos
+     * Configura la barra de herramientas
      */
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
@@ -84,14 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Configura el menú basado en la autenticación
-     */
-    private fun setupMenuBasedOnAuth() {
-        // El menú se configura en onCreateOptionsMenu
-    }
-
-    /**
-     * Configura la navegación inferior
+     * Configura la navegación
      */
     private fun setupNavigation() {
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
@@ -124,14 +130,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Crea el menú de opciones (3 puntos)
+     * Crea el menú de opciones
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
 
         val user = auth.currentUser
 
-        // Opciones de autenticación
         if (user != null) {
             menu.findItem(R.id.action_logout).isVisible = true
             menu.findItem(R.id.action_login).isVisible = false
@@ -140,14 +145,13 @@ class MainActivity : AppCompatActivity() {
             menu.findItem(R.id.action_login).isVisible = true
         }
 
-        // ✅ Opciones de administrador (solo para admins)
         menu.findItem(R.id.action_admin).isVisible = isUserAdmin
 
         return true
     }
 
     /**
-     * Maneja las opciones del menú
+     * Maneja la selección de elementos del menú
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -171,12 +175,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Navega a la pantalla de login
+     */
     private fun goToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
 
+    /**
+     * Muestra la confirmación de cierre de sesión
+     */
     private fun showLogoutConfirmation() {
         android.app.AlertDialog.Builder(this)
             .setTitle("Cerrar Sesión")
@@ -188,6 +198,9 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * Realiza el cierre de sesión
+     */
     private fun performLogout() {
         AuthUI.getInstance()
             .signOut(this)
@@ -207,12 +220,18 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Carga un fragmento
+     */
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
     }
 
+    /**
+     * Programa el worker de monitoreo de partidos
+     */
     private fun startMatchMonitoringWorker() {
         try {
             val constraints = Constraints.Builder()
@@ -241,6 +260,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Solicita los permisos de notificación
+     */
     private fun requestNotificationPermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             when {
@@ -267,6 +289,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Muestra la explicación de los permisos
+     */
     private fun showPermissionExplanation() {
         android.app.AlertDialog.Builder(this)
             .setTitle("Permisos de Notificación")
@@ -284,6 +309,9 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * Maneja la respuesta de los permisos
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

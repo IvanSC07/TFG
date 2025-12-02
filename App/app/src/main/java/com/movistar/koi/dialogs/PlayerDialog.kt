@@ -21,6 +21,9 @@ import com.movistar.koi.data.Team
 import com.movistar.koi.databinding.DialogPlayerBinding
 import java.util.*
 
+/**
+ * Dialogo para crear o editar un jugador
+ */
 class PlayerDialog : DialogFragment() {
 
     private var _binding: DialogPlayerBinding? = null
@@ -32,7 +35,9 @@ class PlayerDialog : DialogFragment() {
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-    // Para seleccionar imagen de la galería
+    /**
+     * Abre la galería para seleccionar una imagen
+     */
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             imageUri = it
@@ -41,9 +46,16 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Instancia del diálogo
+     */
     companion object {
         private const val TAG = "PlayerDialog"
 
+        /**
+         * Crea una nueva instancia del diálogo
+         * @param player Jugador existente para editar, si es nulo se crea uno nuevo
+         */
         fun newInstance(player: Player? = null): PlayerDialog {
             val dialog = PlayerDialog()
             player?.let {
@@ -63,6 +75,9 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea el diálogo
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogPlayerBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -88,12 +103,18 @@ class PlayerDialog : DialogFragment() {
             .create()
     }
 
+    /**
+     * Configura el Spinner de equipos
+     */
     private fun setupTeamsSpinner() {
         teamsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mutableListOf<String>())
         teamsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerTeam.adapter = teamsAdapter
     }
 
+    /**
+     * Carga equipos desde Firebase
+     */
     private fun loadTeamsFromFirestore() {
         FirebaseFirestore.getInstance().collection("teams")
             .get()
@@ -112,7 +133,6 @@ class PlayerDialog : DialogFragment() {
                 }
 
                 teamsAdapter.clear()
-                // Agregar los equipos uno por uno
                 teamNames.forEach { teamName ->
                     teamsAdapter.add(teamName)
                 }
@@ -130,8 +150,7 @@ class PlayerDialog : DialogFragment() {
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error cargando equipos:", exception)
-                // Fallback: agregar algunos equipos por defecto
-                val defaultTeams = arrayOf("Movistar KOI LoL", "Movistar KOI VALORANT", "Movistar KOI Rocket League")
+                val defaultTeams = arrayOf("Movistar KOI LoL", "Movistar KOI VALORANT", "Movistar KOI TFT")
                 teamsAdapter.clear()
                 defaultTeams.forEach { team ->
                     teamsAdapter.add(team)
@@ -140,6 +159,9 @@ class PlayerDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Carga datos existentes del jugador
+     */
     private fun loadExistingData() {
         arguments?.let { args ->
             val playerId = args.getString("id") ?: ""
@@ -159,12 +181,11 @@ class PlayerDialog : DialogFragment() {
             // Llenar los campos
             binding.editTextName.setText(existingPlayer?.name)
             binding.editTextNickname.setText(existingPlayer?.nickname)
-            binding.editTextRole.setText(existingPlayer?.role) // Ahora es EditText
+            binding.editTextRole.setText(existingPlayer?.role)
             binding.editTextNationality.setText(existingPlayer?.nationality)
             binding.editTextAge.setText(existingPlayer?.age.toString())
             binding.editTextBio.setText(existingPlayer?.bio)
 
-            // NOTA: El equipo ahora se selecciona en el Spinner después de cargar los equipos
 
             // Cargar foto existente
             if (!existingPlayer?.photo.isNullOrEmpty()) {
@@ -177,6 +198,9 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Configura los listeners de los botones
+     */
     private fun setupListeners() {
         // Seleccionar imagen de galería
         binding.buttonSelectPhoto.setOnClickListener {
@@ -196,6 +220,9 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Muestra el diálogo para seleccionar la URL de la imagen
+     */
     private fun showImageUrlDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_image_url, null)
         val editTextUrl = dialogView.findViewById<android.widget.EditText>(R.id.editTextImageUrl)
@@ -213,6 +240,9 @@ class PlayerDialog : DialogFragment() {
             .show()
     }
 
+    /**
+     * Carga una imagen desde una URL
+     */
     private fun loadImageFromUrl(url: String) {
         binding.textImageStatus.text = "Cargando imagen..."
 
@@ -228,10 +258,13 @@ class PlayerDialog : DialogFragment() {
         }, 1000)
     }
 
+    /**
+     * Guarda el jugador
+     */
     private fun savePlayer() {
         val name = binding.editTextName.text.toString().trim()
         val nickname = binding.editTextNickname.text.toString().trim()
-        val role = binding.editTextRole.text.toString().trim() // Ahora del EditText
+        val role = binding.editTextRole.text.toString().trim()
         val nationality = binding.editTextNationality.text.toString().trim()
         val ageText = binding.editTextAge.text.toString().trim()
         val bio = binding.editTextBio.text.toString().trim()
@@ -280,6 +313,9 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Crea un nuevo jugador
+     */
     private fun createPlayer(player: Player) {
         val newDocRef = db.collection("players").document()
         val playerWithId = player.copy(id = newDocRef.id)
@@ -297,6 +333,9 @@ class PlayerDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Actualiza un jugador
+     */
     private fun updatePlayer(player: Player) {
         if (player.id.isEmpty()) {
             showToast("Error: ID de jugador inválido")
@@ -317,8 +356,10 @@ class PlayerDialog : DialogFragment() {
             }
     }
 
+    /**
+     * Actualiza el equipo con el nuevo jugador
+     */
     private fun updateTeamWithPlayer(player: Player) {
-        // Buscar el equipo por nombre y agregar el ID del jugador
         db.collection("teams")
             .whereEqualTo("name", player.team)
             .get()
@@ -350,10 +391,10 @@ class PlayerDialog : DialogFragment() {
                 Log.e(TAG, "Error buscando equipo: ${e.message}")
             }
 
-        // También actualizar el equipo anterior si estamos editando y cambió de equipo
+        // Actualiza el equipo anterior si estamos editando y cambió de equipo
         existingPlayer?.let { oldPlayer ->
             if (oldPlayer.team != player.team && oldPlayer.team.isNotEmpty()) {
-                // Quitar el jugador del equipo anterior
+                // Quita el jugador del equipo anterior
                 db.collection("teams")
                     .whereEqualTo("name", oldPlayer.team)
                     .get()
@@ -379,23 +420,35 @@ class PlayerDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Muestra un Toast
+     */
     private fun showToast(message: String) {
         if (isAdded && context != null) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
+    /**
+     * Cierra el diálogo
+     */
     private fun dismissSafely() {
         if (isAdded) {
             dismiss()
         }
     }
 
+    /**
+     * Notifica al padre que se debe recargar la lista de jugadores
+     */
     private fun notifyParentToReload() {
         (targetFragment as? ManagePlayersFragment)?.loadPlayers()
         (targetFragment as? ManageTeamPlayersFragment)?.refreshTeamPlayers()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -12,6 +12,9 @@ import com.movistar.koi.databinding.FragmentNewsDetailBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Fragmento para mostrar el detalle de una noticia
+ */
 class NewsDetailFragment : Fragment() {
 
     private var _binding: FragmentNewsDetailBinding? = null
@@ -22,6 +25,9 @@ class NewsDetailFragment : Fragment() {
         private const val TAG = "NewsDetailFragment"
         private const val ARG_NEWS = "news"
 
+        /**
+         * Crea una nueva instancia del fragmento con los argumentos necesarios
+         */
         fun newInstance(news: News): NewsDetailFragment {
             val fragment = NewsDetailFragment()
             val args = Bundle()
@@ -36,6 +42,9 @@ class NewsDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +54,9 @@ class NewsDetailFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,7 +68,6 @@ class NewsDetailFragment : Fragment() {
         val category = arguments?.getString("category") ?: "general"
         val id = arguments?.getString("id") ?: ""
 
-        // Reconstruir el objeto News
         currentNews = News(
             id = id,
             title = title,
@@ -69,6 +80,9 @@ class NewsDetailFragment : Fragment() {
         setupUI()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         // Cargar imagen con Glide
         if (currentNews.imageUrl.isNotEmpty()) {
@@ -99,6 +113,9 @@ class NewsDetailFragment : Fragment() {
         Log.d(TAG, "📖 Mostrando detalle de noticia: ${currentNews.title}")
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

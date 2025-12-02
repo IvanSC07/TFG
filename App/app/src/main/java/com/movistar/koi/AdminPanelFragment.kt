@@ -13,16 +13,25 @@ import com.movistar.koi.data.UserManager
 import com.movistar.koi.databinding.FragmentAdminPanelBinding
 import com.movistar.koi.data.AdminOption
 
+/**
+ * Panel de administración
+ */
 class AdminPanelFragment : Fragment() {
 
     private var _binding: FragmentAdminPanelBinding? = null
     private val binding get() = _binding!!
     private lateinit var adminAdapter: AdminOptionsAdapter
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "AdminPanelFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +41,9 @@ class AdminPanelFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,8 +51,10 @@ class AdminPanelFragment : Fragment() {
         checkAdminPermissions()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
-        // Configurar RecyclerView para las opciones de admin
         adminAdapter = AdminOptionsAdapter { option ->
             when (option.id) {
                 1 -> navigateToManageNews()
@@ -62,6 +76,9 @@ class AdminPanelFragment : Fragment() {
         loadAdminOptions()
     }
 
+    /**
+     * Verifica los permisos de administrador
+     */
     private fun checkAdminPermissions() {
         Log.d(TAG, "Verificando permisos de administrador...")
 
@@ -84,6 +101,9 @@ class AdminPanelFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga las opciones de administración
+     */
     private fun loadAdminOptions() {
         val adminOptions = listOf(
             AdminOption(
@@ -133,6 +153,9 @@ class AdminPanelFragment : Fragment() {
         adminAdapter.updateOptions(adminOptions)
     }
 
+    /**
+     * Navega a la pantalla de gestión de noticias
+     */
     private fun navigateToManageNews() {
         val fragment = ManageNewsFragment()
         parentFragmentManager.beginTransaction()
@@ -141,6 +164,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Navega a la pantalla de gestión de partidos
+     */
     private fun navigateToManageMatches() {
         val fragment = ManageMatchesFragment()
         parentFragmentManager.beginTransaction()
@@ -149,6 +175,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Navega a la pantalla de gestión de equipos
+     */
     private fun navigateToManageTeams() {
         val fragment = ManageTeamsFragment()
         parentFragmentManager.beginTransaction()
@@ -157,6 +186,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Navega a la pantalla de gestión de jugadores
+     */
     private fun navigateToManagePlayers() {
         val fragment = ManagePlayersFragment()
         parentFragmentManager.beginTransaction()
@@ -165,6 +197,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Navega a la pantalla de gestión de streams
+     */
     private fun navigateToManageStreams() {
         val fragment = ManageStreamsFragment()
         parentFragmentManager.beginTransaction()
@@ -173,6 +208,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Navega a la pantalla de envío de notificaciones
+     */
     private fun navigateToSendNotifications() {
         val fragment = SendNotificationsFragment()
         parentFragmentManager.beginTransaction()
@@ -181,6 +219,9 @@ class AdminPanelFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

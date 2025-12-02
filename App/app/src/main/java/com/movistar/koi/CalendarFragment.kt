@@ -23,6 +23,9 @@ import com.movistar.koi.data.Match
 import com.movistar.koi.databinding.FragmentCalendarBinding
 import java.util.*
 
+/**
+ * Fragmento del calendario
+ */
 class CalendarFragment : Fragment() {
 
     private var _binding: FragmentCalendarBinding? = null
@@ -31,12 +34,18 @@ class CalendarFragment : Fragment() {
     private val matchesList = mutableListOf<Match>()
     private val currentCalendar = Calendar.getInstance()
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "CalendarFragment"
         private const val CALENDAR_PERMISSION_REQUEST = 1001
         private const val CALENDAR_WRITE_PERMISSION = Manifest.permission.WRITE_CALENDAR
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +55,9 @@ class CalendarFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,6 +66,9 @@ class CalendarFragment : Fragment() {
         loadMatches()
     }
 
+    /**
+     * Configura el calendario
+     */
     private fun setupCalendar() {
         calendarAdapter = CalendarAdapter(
             matchesList,
@@ -61,13 +76,12 @@ class CalendarFragment : Fragment() {
                 showMatchesForDate(date)
             },
             onMatchClick = { match ->
-                // Navegar al detalle del partido
                 navigateToMatchDetail(match)
             }
         )
 
         binding.calendarRecyclerView.apply {
-            layoutManager = GridLayoutManager(requireContext(), 7) // 7 días por semana
+            layoutManager = GridLayoutManager(requireContext(), 7)
             adapter = calendarAdapter
         }
 
@@ -80,6 +94,10 @@ class CalendarFragment : Fragment() {
         )
         updateCalendarHeader()
     }
+
+    /**
+     * Configura los listeners de los botones
+     */
     private fun setupClickListeners() {
         binding.prevMonthButton.setOnClickListener {
             currentCalendar.add(Calendar.MONTH, -1)
@@ -101,6 +119,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /**
+     * Actualiza el calendario
+     */
     private fun updateCalendar() {
         updateCalendarHeader()
         calendarAdapter.updateCalendar(
@@ -110,11 +131,17 @@ class CalendarFragment : Fragment() {
         )
     }
 
+    /**
+     * Actualiza el encabezado del calendario
+     */
     private fun updateCalendarHeader() {
         val monthFormat = java.text.SimpleDateFormat("MMMM yyyy", Locale.getDefault())
         binding.monthYearText.text = monthFormat.format(currentCalendar.time)
     }
 
+    /**
+     * Carga los partidos
+     */
     private fun loadMatches() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -150,6 +177,9 @@ class CalendarFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra los partidos para una fecha
+     */
     private fun showMatchesForDate(date: Date) {
         val matchesOnDate = matchesList.filter { match ->
             val matchCalendar = Calendar.getInstance().apply { time = match.date }
@@ -168,13 +198,16 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /**
+     * Navega a la pantalla de detalle del partido
+     */
     private fun navigateToMatchDetail(match: Match) {
-        // Aquí puedes implementar la navegación al detalle del partido
         Toast.makeText(requireContext(), "Partido: ${match.opponent}", Toast.LENGTH_SHORT).show()
     }
 
     /**
      * Sincroniza los partidos con el calendario del dispositivo
+     * NO funciona correctamente.
      */
     private fun syncMatchesWithCalendar() {
         if (!hasCalendarPermission()) {
@@ -205,6 +238,7 @@ class CalendarFragment : Fragment() {
 
     /**
      * Añade un partido al calendario del dispositivo
+     * NO funciona correctamente.
      */
     private fun addMatchToCalendar(match: Match): Boolean {
         return try {
@@ -250,7 +284,7 @@ class CalendarFragment : Fragment() {
                 if (it.moveToFirst()) {
                     it.getLong(0)
                 } else {
-                    1L // Fallback
+                    1L
                 }
             } ?: 1L
         } catch (e: Exception) {
@@ -259,6 +293,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /**
+     * Comprueba si el permiso para escribir en el calendario está concedido
+     */
     private fun hasCalendarPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -266,6 +303,9 @@ class CalendarFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * Solicita el permiso para escribir en el calendario
+     */
     private fun requestCalendarPermission() {
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -274,6 +314,9 @@ class CalendarFragment : Fragment() {
         )
     }
 
+    /**
+     * Maneja la respuesta del permiso
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -294,6 +337,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /**
+     * Limpia los recursos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

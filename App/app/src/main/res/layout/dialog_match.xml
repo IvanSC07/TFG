@@ -47,7 +47,7 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/koi_purple" />
 
-        <!-- Competición (EditText en lugar de Spinner) -->
+        <!-- Competición -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Logo del Oponente con opción de subir imagen -->
+        <!-- Logo del Oponente -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
 
         </LinearLayout>
 
-        <!-- URL del Logo (se llena automáticamente al subir imagen) -->
+        <!-- URL del Logo -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

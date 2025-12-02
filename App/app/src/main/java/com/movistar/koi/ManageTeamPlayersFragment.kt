@@ -15,6 +15,9 @@ import com.movistar.koi.data.FirebaseConfig
 import com.movistar.koi.databinding.FragmentManageTeamPlayersBinding
 import com.movistar.koi.dialogs.PlayerDialog
 
+/**
+ * Fragmento para gestionar jugadores de un equipo
+ */
 class ManageTeamPlayersFragment : Fragment() {
 
     private var _binding: FragmentManageTeamPlayersBinding? = null
@@ -23,9 +26,15 @@ class ManageTeamPlayersFragment : Fragment() {
     private val playersList = mutableListOf<Player>()
     private lateinit var playersAdapter: PlayersAdapter
 
+    /**
+     * Crea la vista
+     */
     companion object {
         private const val TAG = "ManageTeamPlayersFragment"
 
+        /**
+         * Crea una nueva instancia del fragmento con los argumentos necesarios
+         */
         fun newInstance(team: Team): ManageTeamPlayersFragment {
             val fragment = ManageTeamPlayersFragment()
             val args = Bundle()
@@ -43,6 +52,9 @@ class ManageTeamPlayersFragment : Fragment() {
         }
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,10 +64,12 @@ class ManageTeamPlayersFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Obtener el equipo de los argumentos
         val teamId = arguments?.getString("team_id") ?: ""
         val teamName = arguments?.getString("team_name") ?: ""
         val teamGame = arguments?.getString("team_game") ?: ""
@@ -79,9 +93,12 @@ class ManageTeamPlayersFragment : Fragment() {
         )
 
         setupUI()
-        loadTeamPlayersData() // CAMBIÉ EL NOMBRE DEL MÉTODO
+        loadTeamPlayersData()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         binding.toolbar.title = "Jugadores de ${currentTeam.name}"
         binding.toolbar.setNavigationOnClickListener {
@@ -103,7 +120,9 @@ class ManageTeamPlayersFragment : Fragment() {
         }
     }
 
-    // CAMBIÉ EL NOMBRE A loadTeamPlayersData PARA EVITAR CONFLICTO
+    /**
+     * Carga los jugadores del equipo
+     */
     private fun loadTeamPlayersData() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -132,7 +151,6 @@ class ManageTeamPlayersFragment : Fragment() {
                         }
                     }
 
-                    // Ocultar progressBar cuando se hayan cargado todos
                     if (playersList.size == currentTeam.players.size) {
                         binding.progressBar.visibility = View.GONE
                         if (playersList.isEmpty()) {
@@ -149,12 +167,18 @@ class ManageTeamPlayersFragment : Fragment() {
         }
     }
 
+    /**
+     * Muestra el diálogo para agregar un jugador
+     */
     private fun showAddPlayerDialog() {
         val dialog = PlayerDialog.newInstance()
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "add_player_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para un jugador
+     */
     private fun showPlayerActionsDialog(player: Player) {
         val options = arrayOf("Editar", "Ver Detalles", "Quitar del equipo", "Cancelar")
 
@@ -170,12 +194,18 @@ class ManageTeamPlayersFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita un jugador
+     */
     private fun editPlayer(player: Player) {
         val dialog = PlayerDialog.newInstance(player)
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "edit_player_dialog")
     }
 
+    /**
+     * Muestra los detalles del jugador
+     */
     private fun showPlayerDetails(player: Player) {
         val detailFragment = PlayerDetailFragment.newInstance(player)
         parentFragmentManager.beginTransaction()
@@ -184,6 +214,9 @@ class ManageTeamPlayersFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Quita un jugador del equipo
+     */
     private fun removePlayerFromTeam(player: Player) {
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Quitar Jugador")
@@ -195,8 +228,11 @@ class ManageTeamPlayersFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación del jugador del equipo
+     */
     private fun performRemovePlayerFromTeam(player: Player) {
-        // Actualizar la lista de jugadores del equipo (quitar el ID del jugador)
+        // Actualizar la lista de jugadores del equipo
         val updatedPlayers = currentTeam.players.toMutableList().apply {
             remove(player.id)
         }
@@ -225,10 +261,16 @@ class ManageTeamPlayersFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de jugadores
+     */
     fun refreshTeamPlayers() {
         loadTeamPlayersData()
     }
 
+    /**
+     * Actualiza la lista de jugadores
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -26,6 +26,9 @@ class TeamsFragment : Fragment() {
         private const val TAG = "TeamsFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +38,9 @@ class TeamsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,6 +48,9 @@ class TeamsFragment : Fragment() {
         loadTeams()
     }
 
+    /**
+     * Configura el RecyclerView
+     */
     private fun setupRecyclerView() {
         teamsAdapter = TeamsAdapter(teamsList) { team ->
             Log.d(TAG, "Equipo clickeado: ${team.name}")
@@ -56,6 +65,9 @@ class TeamsFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los equipos
+     */
     private fun loadTeams() {
         Log.d(TAG, "Cargando equipos desde Firebase")
 
@@ -69,7 +81,7 @@ class TeamsFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 teamsList.clear()
 
-                Log.d(TAG, "✅ Equipos encontrados: ${documents.size()}")
+                Log.d(TAG, "Equipos encontrados: ${documents.size()}")
 
                 if (documents.isEmpty) {
                     binding.statusText.text = "No hay equipos disponibles"
@@ -81,9 +93,9 @@ class TeamsFragment : Fragment() {
                     try {
                         val team = document.toObject(Team::class.java)
                         teamsList.add(team)
-                        Log.d(TAG, "🏆 Equipo: ${team.name} - ${team.game}")
+                        Log.d(TAG, "Equipo: ${team.name} - ${team.game}")
                     } catch (e: Exception) {
-                        Log.e(TAG, "❌ Error convirtiendo equipo: ${e.message}")
+                        Log.e(TAG, "Error convirtiendo equipo: ${e.message}")
                     }
                 }
 
@@ -96,7 +108,7 @@ class TeamsFragment : Fragment() {
                     binding.recyclerViewTeams.visibility = View.VISIBLE
                     binding.statusText.visibility = View.GONE
 
-                    Log.d(TAG, "✅ ${teamsList.size} equipos mostrados")
+                    Log.d(TAG, "${teamsList.size} equipos mostrados")
                 } else {
                     binding.statusText.text = "No se pudieron cargar los equipos"
                     binding.statusText.visibility = View.VISIBLE
@@ -106,7 +118,7 @@ class TeamsFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.statusText.text = "Error cargando equipos: ${exception.message}"
                 binding.statusText.visibility = View.VISIBLE
-                Log.e(TAG, "❌ Error cargando equipos:", exception)
+                Log.e(TAG, "Error cargando equipos:", exception)
             }
     }
 
@@ -124,6 +136,9 @@ class TeamsFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Actualiza la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

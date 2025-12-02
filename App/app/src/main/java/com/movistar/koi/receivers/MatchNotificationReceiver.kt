@@ -11,15 +11,21 @@ import com.movistar.koi.MainActivity
 import com.movistar.koi.R
 
 /**
- * Receiver para manejar notificaciones programadas de partidos
+ * Receptor de notificaciones de partido
  */
 class MatchNotificationReceiver : BroadcastReceiver() {
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "MatchNotificationReceiver"
         private const val CHANNEL_ID = "match_alerts_channel"
     }
 
+    /**
+     * Maneja las notificaciones de partido
+     */
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             "MATCH_REMINDER" -> {
@@ -36,7 +42,7 @@ class MatchNotificationReceiver : BroadcastReceiver() {
     }
 
     /**
-     * Envía un recordatorio de partido
+     * Envia un recordatorio de partido
      */
     private fun sendMatchReminder(context: Context, opponent: String, competition: String, minutesBefore: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

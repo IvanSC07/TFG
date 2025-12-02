@@ -13,6 +13,9 @@ import com.movistar.koi.data.Player
 import com.movistar.koi.databinding.FragmentManagePlayersBinding
 import com.movistar.koi.dialogs.PlayerDialog
 
+/**
+ * Fragmento para gestionar jugadores
+ */
 class ManagePlayersFragment : Fragment() {
 
     private var _binding: FragmentManagePlayersBinding? = null
@@ -24,6 +27,9 @@ class ManagePlayersFragment : Fragment() {
         private const val TAG = "ManagePlayersFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +39,9 @@ class ManagePlayersFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,6 +49,9 @@ class ManagePlayersFragment : Fragment() {
         loadPlayers()
     }
 
+    /**
+     * Configura la interfaz de usuario
+     */
     private fun setupUI() {
         // Configurar toolbar
         binding.toolbar.title = "Gestionar Jugadores"
@@ -64,6 +76,9 @@ class ManagePlayersFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los jugadores
+     */
     fun loadPlayers() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -102,12 +117,18 @@ class ManagePlayersFragment : Fragment() {
             }
     }
 
+    /**
+     * Muestra el diálogo para agregar un jugador
+     */
     private fun showAddPlayerDialog() {
         val dialog = PlayerDialog.newInstance()
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "player_dialog")
     }
 
+    /**
+     * Muestra el diálogo de acciones para un jugador
+     */
     private fun showPlayerActionsDialog(player: Player) {
         val options = arrayOf("Editar", "Ver Detalles", "Eliminar", "Cancelar")
 
@@ -123,12 +144,18 @@ class ManagePlayersFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Edita un jugador
+     */
     private fun editPlayer(player: Player) {
         val dialog = PlayerDialog.newInstance(player)
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, "edit_player_dialog")
     }
 
+    /**
+     * Muestra los detalles del jugador
+     */
     private fun showPlayerDetails(player: Player) {
         val detailFragment = PlayerDetailFragment.newInstance(player)
         parentFragmentManager.beginTransaction()
@@ -137,6 +164,9 @@ class ManagePlayersFragment : Fragment() {
             .commit()
     }
 
+    /**
+     * Elimina un jugador
+     */
     private fun deletePlayer(player: Player) {
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Eliminar Jugador")
@@ -148,6 +178,9 @@ class ManagePlayersFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Realiza la eliminación de un jugador
+     */
     private fun performDeletePlayer(player: Player) {
         FirebaseConfig.playersCollection
             .whereEqualTo("nickname", player.nickname)
@@ -167,6 +200,9 @@ class ManagePlayersFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de jugadores
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

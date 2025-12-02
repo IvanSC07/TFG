@@ -13,8 +13,14 @@ import com.google.firebase.messaging.RemoteMessage
 import com.movistar.koi.MainActivity
 import com.movistar.koi.R
 
+/**
+ * Servicio para notificaciones de Firebase
+ */
 class NotificationService : FirebaseMessagingService() {
 
+    /**
+     * Constantes
+     */
     companion object {
         private const val TAG = "NotificationService"
         private const val CHANNEL_ID = "movistar_koi_channel"
@@ -47,7 +53,6 @@ class NotificationService : FirebaseMessagingService() {
             sendNotification(title, body)
         }
 
-        // También puedes manejar datos personalizados
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Datos del mensaje: ${remoteMessage.data}")
 
@@ -73,11 +78,11 @@ class NotificationService : FirebaseMessagingService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Crear el canal de notificación (requerido en Android 8+)
+        // Crear el canal de notificación
         createNotificationChannel()
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification) // Necesitarás crear este icono
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
@@ -103,7 +108,7 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     /**
-     * Crea el canal de notificación (requerido para Android 8.0+)
+     * Crea el canal de notificación
      */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

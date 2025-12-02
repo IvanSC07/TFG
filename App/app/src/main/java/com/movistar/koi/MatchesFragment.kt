@@ -24,7 +24,7 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Fragmento para mostrar los partidos del equipo
+ * Fragmento para mostrar partidos
  */
 class MatchesFragment : Fragment() {
 
@@ -37,6 +37,9 @@ class MatchesFragment : Fragment() {
         private const val TAG = "MatchesFragment"
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +49,9 @@ class MatchesFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Crea la vista
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,10 +60,12 @@ class MatchesFragment : Fragment() {
         monitorLiveMatches()
     }
 
+    /**
+     * Configura el RecyclerView
+     */
     private fun setupRecyclerView() {
         matchesAdapter = MatchesAdapter(matchesList) { match ->
             Log.d(TAG, "Partido clickeado: ${match.opponent} - ${match.competition}")
-            // TODO: Navegar a detalle del partido o abrir stream
         }
 
         binding.recyclerViewMatches.apply {
@@ -67,6 +75,9 @@ class MatchesFragment : Fragment() {
         }
     }
 
+    /**
+     * Carga los partidos
+     */
     private fun loadMatches() {
         Log.d(TAG, "Cargando partidos desde Firebase")
 
@@ -99,7 +110,6 @@ class MatchesFragment : Fragment() {
                 }
 
                 if (matchesList.isNotEmpty()) {
-                    // Ordenar por fecha (más reciente primero)
                     matchesList.sortByDescending { it.date }
 
                     matchesAdapter.updateMatches(matchesList)
@@ -107,7 +117,7 @@ class MatchesFragment : Fragment() {
                     binding.recyclerViewMatches.visibility = View.VISIBLE
                     binding.statusText.visibility = View.GONE
 
-                    Log.d(TAG, "✅ ${matchesList.size} partidos mostrados")
+                    Log.d(TAG, "${matchesList.size} partidos mostrados")
                 } else {
                     binding.statusText.text = "No se pudieron cargar los partidos"
                     binding.statusText.visibility = View.VISIBLE
@@ -121,28 +131,30 @@ class MatchesFragment : Fragment() {
             }
     }
 
+    /**
+     * Actualiza la lista de partidos
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     /**
-     * Monitorea partidos en directo y programa notificaciones
+     * Monitoriza los partidos en vivo
      */
     private fun monitorLiveMatches() {
-        // Verificar cada minuto si hay partidos que van a empezar
         val handler = android.os.Handler()
         val runnable = object : Runnable {
             override fun run() {
                 checkUpcomingMatches()
-                handler.postDelayed(this, 60000) // Revisar cada minuto
+                handler.postDelayed(this, 60000)
             }
         }
         handler.postDelayed(runnable, 60000)
     }
 
     /**
-     * Verifica partidos que van a empezar pronto
+     * Comprueba los partidos próximos
      */
     private fun checkUpcomingMatches() {
         val currentTime = Date()
@@ -157,7 +169,6 @@ class MatchesFragment : Fragment() {
         if (upcomingMatches.isNotEmpty()) {
             Log.d(TAG, "Partidos próximos en 1 hora: ${upcomingMatches.size}")
 
-            // Podríamos mostrar una notificación local aquí
             upcomingMatches.forEach { match ->
                 showUpcomingMatchNotification(match)
             }
@@ -165,12 +176,11 @@ class MatchesFragment : Fragment() {
     }
 
     /**
-     * Muestra una notificación local para partidos próximos
+     * Muestra la notificación para un partido próximo
      */
     private fun showUpcomingMatchNotification(match: Match) {
         val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Crear canal si es necesario (para notificaciones locales)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "upcoming_matches",
@@ -207,17 +217,14 @@ class MatchesFragment : Fragment() {
     }
 
 
-
-
     /**
-     * Método para probar notificaciones locales
+     * Probando notificación local
      */
     private fun testLocalNotification() {
         Log.d(TAG, "Probando notificación local...")
 
         val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Crear canal si es necesario
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "test_channel",
@@ -227,7 +234,6 @@ class MatchesFragment : Fragment() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Intent para abrir la app al hacer click
         val intent = Intent(requireContext(), MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -248,7 +254,7 @@ class MatchesFragment : Fragment() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Esta es una notificación de prueba para verificar que el sistema de notificaciones de la app Movistar KOI está funcionando correctamente. ¡Perfecto!"))
+                .bigText("Esta es una notificación de prueba para verificar que el sistema de notificaciones de la app Movistar KOI está funcionando correctamente."))
             .build()
 
         // Mostrar notificación
